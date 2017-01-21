@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework;
 
 namespace Nez.Tiled
 {
-	public class TiledObjectGroup
-	{
+	public class TiledObjectLayer : TiledLayer
+    {
 		public string name;
 		public Color color;
 		public float opacity;
@@ -15,12 +15,12 @@ namespace Nez.Tiled
 		public TiledObject[] objects;
 
 
-		public TiledObjectGroup( string name, Color color, bool visible, float opacity )
+		public TiledObjectLayer( string name, Color color) : base(name)
 		{
 			this.name = name;
 			this.color = color;
-			this.visible = visible;
-			this.opacity = opacity;
+			//this.visible = visible;
+			//this.opacity = opacity;
 		}
 
 
@@ -56,6 +56,10 @@ namespace Nez.Tiled
 			return list;
 		}
 
-	}
+	    public override void draw(Batcher batcher, Vector2 position, float layerDepth, RectangleF cameraClipBounds)
+	    {
+	        throw new NotImplementedException();
+	    }
+    }
 }
 

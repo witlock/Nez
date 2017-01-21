@@ -159,7 +159,7 @@ namespace Nez
 
 		public override void debugRender( Graphics graphics )
 		{
-			foreach( var group in tiledMap.objectGroups )
+			foreach( var group in tiledMap.objectLayers )
 				renderObjectGroup( group, graphics );
 
 			if( _colliders != null )
@@ -211,7 +211,7 @@ namespace Nez
 
 		#region Rendering helpers
 
-		void renderObjectGroup( TiledObjectGroup group, Graphics graphics )
+		void renderObjectGroup( TiledObjectLayer group, Graphics graphics )
 		{
 			var renderPosition = entity.transform.position + _localOffset;
 

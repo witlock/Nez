@@ -6,7 +6,8 @@ namespace Nez.Tiled
 	public enum TiledLayerType
 	{
 		Tile,
-		Image
+		Image,
+        Object
 	}
 }
 

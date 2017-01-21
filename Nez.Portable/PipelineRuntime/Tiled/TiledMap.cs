@@ -21,7 +21,8 @@ namespace Nez.Tiled
 		public readonly Dictionary<string, string> properties = new Dictionary<string, string>();
 		public readonly List<TiledLayer> layers = new List<TiledLayer>();
 		public readonly List<TiledImageLayer> imageLayers = new List<TiledImageLayer>();
-		public readonly List<TiledObjectGroup> objectGroups = new List<TiledObjectGroup>();
+        //todo: remove
+		public readonly List<TiledObjectLayer> objectLayers = new List<TiledObjectLayer>();
 		public readonly List<TiledTileset> tilesets = new List<TiledTileset>();
 
 		public int widthInPixels { get { return width * tileWidth; } }
@@ -124,10 +125,12 @@ namespace Nez.Tiled
 		}
 
 
-		public TiledObjectGroup createObjectGroup( string name, Color color, bool visible, float opacity )
+		public TiledObjectLayer createObjectLayer( string name, Color color )
 		{
-			var group = new TiledObjectGroup( name, color, visible, opacity );
-			objectGroups.Add( group );
+			var group = new TiledObjectLayer( name, color );
+			layers.Add( group );
+            // todo: remove
+			objectLayers.Add( group );
 			return group;
 		}
 
@@ -251,12 +254,12 @@ namespace Nez.Tiled
 		/// </summary>
 		/// <returns>The object group.</returns>
 		/// <param name="name">Name.</param>
-		public TiledObjectGroup getObjectGroup( string name )
+		public TiledObjectLayer getObjectGroup( string name )
 		{
-			for( var i = 0; i < objectGroups.Count; i++ )
+			for( var i = 0; i < objectLayers.Count; i++ )
 			{
-				if( objectGroups[i].name == name )
-					return objectGroups[i];
+				if( objectLayers[i].name == name )
+					return objectLayers[i];
 			}
 			return null;
 		}

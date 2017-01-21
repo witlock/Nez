@@ -11,6 +11,7 @@ namespace Nez.Tiled
 		public Dictionary<string,string> properties;
 		public bool visible = true;
 		public float opacity;
+	    public int layer;
 
 
 		protected TiledLayer( string name )

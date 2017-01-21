@@ -98,10 +98,6 @@ namespace Nez.Tiled
 			}
 
 
-			var objectGroupCount = reader.ReadInt32();
-			for( var i = 0; i < objectGroupCount; i++ )
-				readObjectGroup( reader, tiledMap );
-
 			return tiledMap;
 		}
 
@@ -127,6 +123,8 @@ namespace Nez.Tiled
 				layer = readTileLayer( reader, tiledMap, layerName );
 			else if( layerType == TiledLayerType.Image )
 				layer = readImageLayer( reader, tiledMap, layerName );
+            else if( layerType == TiledLayerType.Object )
+				layer = readObjectLayer( reader, tiledMap, layerName );
 			else
 				throw new NotSupportedException( string.Format( "Layer type {0} with name {1} is not supported", layerType, layerName ) );
 
@@ -202,10 +200,10 @@ namespace Nez.Tiled
 		}
 
 
-		static TiledObjectGroup readObjectGroup( ContentReader reader, TiledMap tiledMap )
+		static TiledObjectLayer readObjectLayer( ContentReader reader, TiledMap tileMap, string layerName )
 		{
-			var objectGroup = tiledMap.createObjectGroup(
-				reader.ReadString(), reader.ReadColor(), reader.ReadBoolean(), reader.ReadSingle() );
+			var objectGroup = tileMap.createObjectLayer(
+                layerName, reader.ReadColor() );
 
 			readCustomProperties( reader, objectGroup.properties );
 
@@ -259,8 +257,8 @@ namespace Nez.Tiled
 				objectGroup.objects[i] = obj;
 			}
 
-			return objectGroup;
-		}
+            return objectGroup;
+        }
 
 
 		static Vector2[] readVector2Array( ContentReader reader )

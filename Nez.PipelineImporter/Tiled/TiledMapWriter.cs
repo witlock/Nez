@@ -138,63 +138,63 @@ namespace Nez.TiledMaps
 					TiledMapProcessor.logger.LogMessage( "Expecting texture asset: {0}\n", imageLayer.image.source );
 				}
 
-				writeCustomProperties( writer, layer.properties );
+                var objectLayer = layer as TmxObjectLayer;
+			    if (objectLayer != null)
+			    {
+                    writer.Write((int)TiledLayerType.Object);
+                    writer.Write(hexToColor(objectLayer.color));
+
+                    writeCustomProperties(writer, objectLayer.properties);
+
+                    writer.Write(objectLayer.objects.Count);
+			        foreach (var obj in objectLayer.objects)
+			        {
+			            writer.Write(obj.gid);
+			            writer.Write(obj.name ?? string.Empty);
+			            writer.Write(obj.type ?? string.Empty);
+			            writer.Write((int) obj.x);
+			            writer.Write((int) obj.y);
+			            writer.Write((int) obj.width);
+			            writer.Write((int) obj.height);
+			            writer.Write(obj.rotation);
+			            writer.Write(obj.visible);
+
+			            if (obj.ellipse != null)
+			            {
+			                writer.Write("ellipse");
+			            }
+			            else if (obj.image != null)
+			            {
+			                writer.Write("image");
+			            }
+			            else if (obj.polygon != null)
+			            {
+			                writer.Write("polygon");
+			                writePointList(writer, obj, obj.polygon.points);
+			            }
+			            else if (obj.polyline != null)
+			            {
+			                writer.Write("polyline");
+			                writePointList(writer, obj, obj.polyline.points);
+			            }
+			            else
+			            {
+			                writer.Write("none");
+			            }
+
+			            writer.Write(obj.type ?? string.Empty);
+
+			            writeCustomProperties(writer, obj.properties);
+			        }
+
+			        
+			    }
+
+			    writeCustomProperties( writer, layer.properties );
 				TiledMapProcessor.logger.LogMessage( "done writing Layer: {0}", layer );
 			}
 
-			writer.Write( map.objectGroups.Count );
-			foreach( var group in map.objectGroups )
-			{
-				writer.Write( group.name );
-				writer.Write( hexToColor( group.color ) );
-				writer.Write( group.visible );
-				writer.Write( group.opacity );
 
-				writeCustomProperties( writer, group.properties );
-
-				writer.Write( group.objects.Count );
-				foreach( var obj in group.objects )
-				{
-					writer.Write( obj.gid );
-					writer.Write( obj.name ?? string.Empty );
-					writer.Write( obj.type ?? string.Empty );
-					writer.Write( (int)obj.x );
-					writer.Write( (int)obj.y );
-					writer.Write( (int)obj.width );
-					writer.Write( (int)obj.height );
-					writer.Write( obj.rotation );
-					writer.Write( obj.visible );
-
-					if( obj.ellipse != null )
-					{
-						writer.Write( "ellipse" );
-					}
-					else if( obj.image != null )
-					{
-						writer.Write( "image" );
-					}
-					else if( obj.polygon != null )
-					{
-						writer.Write( "polygon" );
-						writePointList( writer, obj, obj.polygon.points );
-					}
-					else if( obj.polyline != null )
-					{
-						writer.Write( "polyline" );
-						writePointList( writer, obj, obj.polyline.points );
-					}
-					else
-					{
-						writer.Write( "none" );
-					}
-
-					writer.Write( obj.type ?? string.Empty );
-
-					writeCustomProperties( writer, obj.properties );
-				}
-				
-				TiledMapProcessor.logger.LogMessage( "done writing ObjectGroup: {0}", group );
-			}
 		}
 
 

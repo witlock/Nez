@@ -15,7 +15,6 @@ namespace Nez.Tiled
 		public readonly TiledTile[] tiles;
 		public Color color = Color.White;
 
-
 		public int tileWidth { get { return tiledMap.tileWidth; } }
 
 		public int tileHeight { get { return tiledMap.tileHeight; } }
@@ -147,7 +146,15 @@ namespace Nez.Tiled
 					if( rotation == 0 )
 						ty += ( tiledMap.tileHeight - tileRegion.sourceRect.Height );
 
-					batcher.draw( tileRegion, new Vector2( tx, ty ), color, rotation, Vector2.Zero, 1, spriteEffects, layerDepth );
+				    int layer = tiledMap.layers.IndexOf(this);
+                    float depth = 1 - ((tx + ty)) / 10000f;
+                    //float depth = 1 - Mathf.map01(((tx + ty) * layer), 0, 3000);
+                    //float depth = (Screen.center.Y - ty) / 1260 + 0.5f;
+
+                    //if(tiledMap.layers.IndexOf(this) == 3)
+                    //Debug.log("layer: " + layer + " tile " + tile.id + " " + depth);
+
+                    batcher.draw( tileRegion, new Vector2( tx, ty ), color, rotation, Vector2.Zero, 1, spriteEffects, layerDepth);
 				}
 			}
 		}

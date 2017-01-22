@@ -125,9 +125,9 @@ namespace Nez.Tiled
 		}
 
 
-		public TiledObjectLayer createObjectLayer( string name, Color color )
+		public TiledObjectLayer createObjectLayer( string name, Color color, TiledObject[] objects )
 		{
-			var group = new TiledObjectLayer( name, color );
+			var group = new TiledObjectLayer( this, name, color, objects );
 			layers.Add( group );
             // todo: remove
 			objectLayers.Add( group );

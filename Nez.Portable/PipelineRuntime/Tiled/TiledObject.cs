@@ -13,7 +13,8 @@ namespace Nez.Tiled
 			Ellipse,
 			Image,
 			Polygon,
-			Polyline
+			Polyline,
+            Tile
 		}
 
 		public int gid;
@@ -28,6 +29,7 @@ namespace Nez.Tiled
 		public TiledObjectType tiledObjectType;
 		public string objectType;
 		public Vector2[] polyPoints;
+	    public TiledTile tile;
 		public Dictionary<string,string> properties = new Dictionary<string,string>();
 		
 		/// <summary>

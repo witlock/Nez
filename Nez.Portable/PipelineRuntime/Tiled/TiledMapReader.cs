@@ -202,13 +202,16 @@ namespace Nez.Tiled
 
 		static TiledObjectLayer readObjectLayer( ContentReader reader, TiledMap tileMap, string layerName )
 		{
-			var objectGroup = tileMap.createObjectLayer(
-                layerName, reader.ReadColor() );
 
-			readCustomProperties( reader, objectGroup.properties );
+		    Color color = reader.ReadColor();
+            var properties = new Dictionary<string,string>();
+
+            readCustomProperties( reader, properties);
 
 			var objectCount = reader.ReadInt32();
-			objectGroup.objects = new TiledObject[objectCount];
+
+            var objects = new TiledObject[objectCount];
+
 			for( var i = 0; i < objectCount; i++ )
 			{
 				var obj = new TiledObject()
@@ -245,17 +248,30 @@ namespace Nez.Tiled
 					obj.tiledObjectType = TiledObject.TiledObjectType.Polyline;
 					obj.polyPoints = readVector2Array( reader );
 				}
-				else
+				else if(tiledObjectType == "tile")
+				{
+					obj.tiledObjectType = TiledObject.TiledObjectType.Tile;
+                    obj.tile = new TiledTile(obj.gid)
+                    {
+                        //flippedHorizonally = flippedHorizonally,
+                        //flippedVertically = flippedVertically,
+                        //flippedDiagonally = flippedDiagonally
+                    };
+                    obj.tile.tileset = tileMap.getTilesetForTileId(obj.gid);
+                }
+                else
 				{
 					obj.tiledObjectType = TiledObject.TiledObjectType.None;
-				}
+                }
 
-				obj.objectType = reader.ReadString();
 
 				readCustomProperties( reader, obj.properties );
 
-				objectGroup.objects[i] = obj;
+				objects[i] = obj;
 			}
+
+            var objectGroup = tileMap.createObjectLayer(layerName, color, objects);
+		    objectGroup.properties = properties;
 
             return objectGroup;
         }

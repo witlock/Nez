@@ -177,12 +177,16 @@ namespace Nez.TiledMaps
 			                writer.Write("polyline");
 			                writePointList(writer, obj, obj.polyline.points);
 			            }
+                        else if (obj.gid != 0)
+			            {
+			                writer.Write("tile");
+			            }
 			            else
 			            {
 			                writer.Write("none");
 			            }
 
-			            writer.Write(obj.type ?? string.Empty);
+			            //writer.Write(obj.type ?? string.Empty);
 
 			            writeCustomProperties(writer, obj.properties);
 			        }

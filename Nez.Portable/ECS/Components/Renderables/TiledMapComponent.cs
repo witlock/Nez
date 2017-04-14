@@ -236,6 +236,9 @@ namespace Nez
 					case TiledObject.TiledObjectType.None:
 						graphics.batcher.drawHollowRect( renderPosition.X + obj.x, renderPosition.Y + obj.y, obj.width, obj.height, group.color );
 						break;
+                    case TiledObject.TiledObjectType.Tile:
+						graphics.batcher.drawHollowRect( renderPosition.X + obj.x, renderPosition.Y + obj.y, obj.width, obj.height, group.color );
+						break;
 					default:
 						throw new ArgumentOutOfRangeException();
 				}

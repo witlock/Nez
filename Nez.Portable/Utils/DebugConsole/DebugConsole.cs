@@ -46,7 +46,7 @@ namespace Nez.Console
 		const int HORIZONTAL_PADDING = 10;
 
 		bool enabled = true;
-		internal bool isOpen;
+		public bool isOpen;
 		Dictionary<string,CommandInfo> _commands;
 		List<string> _sorted;
 

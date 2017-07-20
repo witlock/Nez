@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System;
 using Nez.PipelineImporter;
-
+using Microsoft.Xna.Framework;
 
 namespace Nez.TiledMaps
 {
@@ -35,7 +35,10 @@ namespace Nez.TiledMaps
 		[XmlAttribute( AttributeName = "margin" )]
 		public int margin;
 
-		[XmlElement( ElementName = "tileoffset" )]
+        [XmlElement(ElementName = "bounds")]
+        public Rectangle bounds = new Rectangle();
+
+        [XmlElement( ElementName = "tileoffset" )]
 		public TmxTileOffset tileOffset;
 
 		[XmlElement( ElementName = "tile" )]

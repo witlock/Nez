@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Textures;
-
+using Microsoft.Xna.Framework;
 
 namespace Nez.Tiled
 {
@@ -47,14 +47,36 @@ namespace Nez.Tiled
 				}
 			}
 		}
-			
 
-		/// <summary>
-		/// gets the Subtexture for the tile with id
-		/// </summary>
-		/// <returns>The tile texture region.</returns>
-		/// <param name="id">Identifier.</param>
-		public virtual Subtexture getTileTextureRegion( int id )
+        public TiledTileset(Texture2D texture, int firstId, int tileWidth, int tileHeight, Rectangle bounds, int spacing = 2, int margin = 2)
+        {
+            this.texture = texture;
+            this.firstId = firstId;
+            this.tileWidth = tileWidth;
+            this.tileHeight = tileHeight;
+            this.spacing = spacing;
+            this.margin = margin;
+
+            var id = firstId;
+            _regions = new Dictionary<int, Subtexture>();
+            for (var y = margin + bounds.Top; y < bounds.Bottom - (margin); y += tileHeight + spacing)
+            {
+                for (var x = margin + bounds.Left; x < bounds.Right - (margin); x += tileWidth + spacing)
+                {
+                    _regions.Add(id, new Subtexture(texture, x, y, tileWidth, tileHeight));
+                    id++;
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// gets the Subtexture for the tile with id
+        /// </summary>
+        /// <returns>The tile texture region.</returns>
+        /// <param name="id">Identifier.</param>
+        public virtual Subtexture getTileTextureRegion( int id )
 		{
 			return _regions[id];
 		}

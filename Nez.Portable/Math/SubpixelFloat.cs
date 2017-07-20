@@ -26,8 +26,18 @@
 		public void update( ref float amount )
 		{
 			remainder += amount;
-			var motion = Mathf.truncateToInt( remainder );
-			remainder -= motion;
+            var motion = 0f;
+
+		    motion = Mathf.truncateToInt(remainder);
+
+            if (remainder > 0.5f)
+                motion += 0.5f;
+            if (remainder < -0.5f)
+                motion += -0.5f;
+
+
+            //var motion = Mathf.truncateToInt(remainder);
+            remainder -= motion;
 			amount = motion;
 		}
 

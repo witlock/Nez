@@ -76,8 +76,27 @@ namespace Nez.Tiled
 			return tileset;
 		}
 
+        public TiledTileset createTileset(Texture2D texture, int firstId, int tileWidth, int tileHeight, bool isStandardTileset, Rectangle bounds, int spacing = 2, int margin = 2)
+        {
+            TiledTileset tileset;
+            if (isStandardTileset)
+                tileset = new TiledTileset(texture, firstId, tileWidth, tileHeight, bounds, spacing, margin);
+            else
+                tileset = new TiledImageCollectionTileset(texture, firstId);
 
-		public TiledLayer createTileLayer( string name, int width, int height )
+            if (tileset.tileWidth > largestTileWidth)
+                largestTileWidth = tileset.tileWidth;
+
+            if (tileset.tileHeight > largestTileHeight)
+                largestTileHeight = tileset.tileHeight;
+
+            tilesets.Add(tileset);
+
+            return tileset;
+        }
+
+
+        public TiledLayer createTileLayer( string name, int width, int height )
 		{
 			if( orientation == TiledMapOrientation.Orthogonal )
 			{

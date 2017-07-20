@@ -83,6 +83,7 @@ namespace Nez
 
 		void IUpdatable.update()
 		{
+            //Debug.log("camera: " + camera.position.X + ", target: " + _targetEntity.position.X);
 			// translate the deadzone to be in world space
 			var halfScreen = entity.scene.sceneRenderTargetSize.ToVector2() * 0.5f;
 			_worldSpaceDeadzone.x = camera.position.X - halfScreen.X + deadzone.x + focusOffset.X;

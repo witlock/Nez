@@ -47,14 +47,16 @@ namespace Nez.Tiled
 					texture = reader.ContentManager.Load<Texture2D>( textureAssetName );
 				}
 
-				var tileset = tiledMap.createTileset(
-										texture: texture,
-										firstId: reader.ReadInt32(),
-										tileWidth: reader.ReadInt32(),
-										tileHeight: reader.ReadInt32(),
-										isStandardTileset: isStandardTileset,
-										spacing: reader.ReadInt32(),
-										margin: reader.ReadInt32() );
+                var tileset = tiledMap.createTileset(
+                                        texture: texture,
+                                        firstId: reader.ReadInt32(),
+                                        tileWidth: reader.ReadInt32(),
+                                        tileHeight: reader.ReadInt32(),
+                                        isStandardTileset: isStandardTileset,
+                                        spacing: reader.ReadInt32(),
+                                        margin: reader.ReadInt32(),
+                                        bounds: new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32())
+                                        );
 				readCustomProperties( reader, tileset.properties );
 
 				// tiledset tile array

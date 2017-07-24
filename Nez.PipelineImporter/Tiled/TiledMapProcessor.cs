@@ -73,14 +73,12 @@ namespace Nez.TiledMaps
         {
             context.Logger.LogMessage("\n\t Running OT Atlas combiner\n");
 
-            var imagePaths = new List<string>();
-            var atlasFilename = "map-atlas-" + mapId + ".png";
+            var imagePaths = new Dictionary<string,string>();//<string>();
+            var atlasFilename = "map-atlas.png";
 
             foreach (TmxTileset tileset in tilesets)
             {
-
-
-
+ 
                 //if (tileset.image != null)
                 //    continue;
 
@@ -88,12 +86,15 @@ namespace Nez.TiledMaps
                 if (tileset.image == null)
                     tileset.isStandardTileset = false;
                 else
-                    imagePaths.Add(tileset.image.source);
+                {
+                    imagePaths.Add(tileset.image.source, tileset.mapFolder);
+                }
+                
 
                 foreach (var tile in tileset.tiles)
                 {
-                    if (tile.image != null && !imagePaths.Contains(tile.image.source))
-                        imagePaths.Add(tile.image.source);
+                    if (tile.image != null && !imagePaths.ContainsKey(tile.image.source))
+                        imagePaths.Add(tile.image.source, tileset.mapFolder);
                 }
 
             }
@@ -105,9 +106,11 @@ namespace Nez.TiledMaps
                 foreach (var inputFilename in imagePaths)
                 {
                     // Store the name of this sprite.
-                    var spriteName = Path.GetFileName(inputFilename);
+                    var spriteName = Path.GetFileName(inputFilename.Key);
 
-                    var absolutePath = PathHelper.getAbsolutePath(inputFilename, tilesets[0].mapFolder);
+                    var absolutePath = PathHelper.getAbsolutePath(inputFilename.Key, inputFilename.Value);
+
+                    //context.Logger.LogMessage("map folder: " + inputFilename.Value);
                     context.Logger.LogMessage("Adding texture: {0}", spriteName);
 
                     // Load the sprite texture into memory.
@@ -134,9 +137,8 @@ namespace Nez.TiledMaps
                         bm.SetPixel(x, y, color);
                     }
                 }
-
                 
-                bm.Save(Path.Combine(tilesets[0].mapFolder, atlasFilename), System.Drawing.Imaging.ImageFormat.Png);
+                bm.Save(Path.Combine(imagePaths.First().Value, atlasFilename), System.Drawing.Imaging.ImageFormat.Png);
                 context.Logger.LogImportantMessage("\n-- generated atlas {0}. Make sure you add it to the Pipeline tool!", atlasFilename);
 
                 foreach (TmxTileset tileset in tilesets)
@@ -145,7 +147,7 @@ namespace Nez.TiledMaps
 
                     if (tileset.image != null)
                     {
-                    tileset.bounds = spriteRectangles[imagePaths.IndexOf(tileset.image.source)];
+                    tileset.bounds = spriteRectangles[imagePaths.Keys.ToList().IndexOf(tileset.image.source)];
 
                     // set the new atlas as our tileset source image
                     tileset.image = new TmxImage();
@@ -166,7 +168,7 @@ namespace Nez.TiledMaps
                     if (tile.image == null)
                             continue;
 
-                        tile.sourceRect = spriteRectangles[imagePaths.IndexOf(tile.image.source)];
+                        tile.sourceRect = spriteRectangles[imagePaths.Keys.ToList().IndexOf(tile.image.source)];
                     }
 
                 }

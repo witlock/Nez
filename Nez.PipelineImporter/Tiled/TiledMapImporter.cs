@@ -43,8 +43,12 @@ namespace Nez.TiledMaps
 							map.tilesets[i] = (TmxTileset)xmlSerializer.Deserialize( file );
 							map.tilesets[i].fixImagePath( filename, tileset.source );
 							map.tilesets[i].firstGid = tileset.firstGid;
-						}
-					}
+						    // fixes the issue of missing tilesets on terrains
+                            map.tilesets[i].mapFolder = Path.GetDirectoryName(Path.GetFullPath(filename));
+                        }
+                        
+					    
+                    }
 					else
 					{
 						tileset.mapFolder = Path.GetDirectoryName( Path.GetFullPath( filename ) );

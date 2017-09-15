@@ -253,11 +253,16 @@ namespace Nez.Tiled
 				else if(tiledObjectType == "tile")
 				{
 					obj.tiledObjectType = TiledObject.TiledObjectType.Tile;
+
+				    var flippedHorizonally = reader.ReadBoolean();
+				    var flippedVertically = reader.ReadBoolean();
+				    var flippedDiagonally = reader.ReadBoolean();
+
                     obj.tile = new TiledTile(obj.gid)
                     {
-                        //flippedHorizonally = flippedHorizonally,
-                        //flippedVertically = flippedVertically,
-                        //flippedDiagonally = flippedDiagonally
+                        flippedHorizonally = flippedHorizonally,
+                        flippedVertically = flippedVertically,
+                        flippedDiagonally = flippedDiagonally
                     };
                     obj.tile.tileset = tileMap.getTilesetForTileId(obj.gid);
                 }

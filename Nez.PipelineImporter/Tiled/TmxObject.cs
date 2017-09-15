@@ -7,8 +7,8 @@ namespace Nez.TiledMaps
 {
 	public class TmxObject
 	{
-		[XmlAttribute( DataType = "int", AttributeName = "gid" )]
-		public int gid;
+		[XmlAttribute( AttributeName = "gid" )]
+		public uint gid;
 
 		[XmlAttribute( DataType = "string", AttributeName = "name" )]
 		public string name;

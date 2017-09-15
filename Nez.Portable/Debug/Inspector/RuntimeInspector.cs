@@ -146,11 +146,14 @@ namespace Nez
 			_table.defaults().setPadTop( 4 ).setPadLeft( 4 ).setPadRight( 0 ).setAlign( Align.left );
 			_table.setBackground( new PrimitiveDrawable( new Color( 40, 40, 40 ) ) );
 
+		    
+
 			// wrap up the table in a ScrollPane
 			_scrollPane = ui.stage.addElement( new ScrollPane( _table, _skin ) );
+            //_scrollPane.setScale(2f);
 			// force a validate which will layout the ScrollPane and populate the proper scrollBarWidth
 			_scrollPane.validate();
-			_scrollPane.setSize( 295 + _scrollPane.getScrollBarWidth(), Screen.height );
+			_scrollPane.setSize( 400 + _scrollPane.getScrollBarWidth(), Screen.height );
 		}
 
 

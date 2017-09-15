@@ -153,8 +153,22 @@ namespace Nez.TiledMaps
                     writer.Write(objectLayer.objects.Count);
 			        foreach (var obj in objectLayer.objects)
 			        {
-			            writer.Write(obj.gid);
-			            writer.Write(obj.name ?? string.Empty);
+			            // Read out the flags
+                        var flippedHorizontally = (obj.gid & FLIPPED_HORIZONTALLY_FLAG) != 0;
+			            var flippedVertically = (obj.gid & FLIPPED_VERTICALLY_FLAG) != 0;
+			            var flippedDiagonally = (obj.gid & FLIPPED_DIAGONALLY_FLAG) != 0;
+
+			            if (flippedHorizontally || flippedVertically || flippedDiagonally)
+			            {
+			                // Clear the flags
+			                obj.gid &= ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
+			                //tile.flippedHorizontally = flippedHorizontally;
+			                //tile.flippedVertically = flippedVertically;
+			                //tile.flippedDiagonally = flippedDiagonally;
+                        }
+
+                        writer.Write(obj.gid);
+                        writer.Write(obj.name ?? string.Empty);
 			            writer.Write(obj.type ?? string.Empty);
 			            writer.Write((int) obj.x);
 			            writer.Write((int) obj.y);
@@ -184,8 +198,15 @@ namespace Nez.TiledMaps
                         else if (obj.gid != 0)
 			            {
 			                writer.Write("tile");
-			            }
-			            else
+			                // Read out the flags
+
+
+			                writer.Write(flippedHorizontally);
+			                writer.Write(flippedVertically);
+			                writer.Write(flippedDiagonally);
+
+                        }
+                        else
 			            {
 			                writer.Write("none");
 			            }

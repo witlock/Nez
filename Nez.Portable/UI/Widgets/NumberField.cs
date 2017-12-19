@@ -22,18 +22,17 @@ namespace Nez.UI.Widgets
         public NumberField(float initial, float min, float max, float step, bool showButtons, NumberFieldStyle style)
         {
             this.style = style;
-
+            defaults().space(0);
             SetMin(min);
             SetMax(max);
             SetStep(step);
             field = new TextField(initial.ToString(), this.style);
-
+            field.setAlignment(Align.center);
             if (showButtons)
             {
                 decrease = new TextButton("", style.DecreaseButtonStyle);
                 
                 increase = new TextButton("", style.IncreaseButtonStyle);
-
                 increase.onClicked += button =>
                 {
                     increaseNumber();
@@ -58,15 +57,15 @@ namespace Nez.UI.Widgets
                 }
             };
 
-            if(showButtons)
+            if (showButtons)
                 add(decrease);
 
-            add(field);
+            add(field).fill().expand();
 
             if (showButtons)
                 add(increase);
 
-            setSize(preferredWidth, preferredHeight);
+            //setSize(preferredWidth, preferredHeight);
         }
 
         private void increaseNumber()

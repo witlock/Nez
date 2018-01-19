@@ -69,11 +69,14 @@ namespace Nez.TiledMaps
 		{
 			var mapDirectory = Path.GetDirectoryName( mapPath );
 			var tilesetDirectory = Path.GetDirectoryName( tilesetSource );
-			var imageDirectory = Path.GetDirectoryName( this.image.source );
-			var imageFile = Path.GetFileName( this.image.source );
-            
-			var newPath = Path.GetFullPath( Path.Combine( mapDirectory, tilesetDirectory, imageDirectory, imageFile ) );                        
-			image.source = Path.Combine( PathHelper.makeRelativePath( mapPath, newPath ) );
+		    if (tiles.Count == 0)
+		    {
+		        var imageDirectory = Path.GetDirectoryName(this.image.source);
+		        var imageFile = Path.GetFileName(this.image.source);
+
+		        var newPath = Path.GetFullPath(Path.Combine(mapDirectory, tilesetDirectory, imageDirectory, imageFile));
+		        image.source = Path.Combine(PathHelper.makeRelativePath(mapPath, newPath));
+		    }
 		}
 
 

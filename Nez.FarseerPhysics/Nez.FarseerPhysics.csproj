@@ -46,7 +46,6 @@
     <Compile Include="Farseer\Common\PathManager.cs" />
     <Compile Include="Farseer\Common\PolygonTools.cs" />
     <Compile Include="Farseer\Common\Serialization.cs" />
-    <Compile Include="Farseer\Common\Stopwatch.cs" />
     <Compile Include="Farseer\Common\Vertices.cs" />
     <Compile Include="Farseer\Common\ConvexHull\ChainHull.cs" />
     <Compile Include="Farseer\Common\ConvexHull\GiftWrap.cs" />
@@ -183,11 +182,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>..\Nez.Portable\MonoGamePCL\MonoGame.Framework.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Nez\" />
     <Folder Include="Nez\LowLevel\" />
     <Folder Include="Nez\HighLevel\" />
@@ -198,6 +192,14 @@
     <Folder Include="Nez\LowLevel\Components\" />
     <Folder Include="Nez\LowLevel\Components\Renderables\" />
     <Folder Include="Nez\Common\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\packages\MonoGame.Framework.Portable.3.6.0.1625\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

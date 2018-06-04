@@ -21,7 +21,7 @@ namespace Nez
         /// <summary>
         /// how fast the camera closes the distance to the target position
         /// </summary>
-        public float followLerp = 0.1f;
+        public float followLerp = 0.05f;
 
         /// <summary>
         /// when in CameraWindow mode the width/height is used as a bounding box to allow movement within it without moving the camera.
@@ -87,7 +87,7 @@ namespace Nez
 
         void IUpdatable.update()
         {
-            ////Debug.log("{0} {1} ", camera.position, _targetEntity.name);
+            //Debug.log("{0} {1} ", camera.position, _targetEntity.name);
             //camera.entity.position = _targetEntity.transform.position; //new Vector2(976,2500);//_targetEntity.transform.position;
             //return;
             //if ((camera.position - currentTarget).Length() < 200 || initial)
@@ -112,10 +112,41 @@ namespace Nez
 
             //currentTarget = camera.position + _desiredPositionDelta;
             //newLocaton = false;
+            //Debug.log(_desiredPositionDelta);
+            //Debug.log(((camera.position + _desiredPositionDelta) - camera.position).Length());
+            //_desiredPositionDelta.round();
             //Debug.log("Set position: {0}", camera.position + _desiredPositionDelta);
             //camera.setPosition(camera.position + _desiredPositionDelta);
-            camera.position = Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, followLerp);
+            //camera.position = Vector2.Lerp(camera.position, new Vector2(camera.position, (float)(-smiley[1] + smileyPos[1])), (float)0.05);
+            //if (((camera.position + _desiredPositionDelta) - camera.position).Length() > 10f)
+            //{
+            //    Debug.log(((camera.position + _desiredPositionDelta) - camera.position).Length());
+            //Core.schedule(0, t =>
+            //{
+            //    camera.entity.tweenLocalPositionTo(camera.position + _desiredPositionDelta,0.3f);
+            //});
+
+            var distance = _desiredPositionDelta;
+
+
+
+                //camera.position += distance.round();
+            
+
+            camera.position = Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta.round(), followLerp);
             camera.entity.transform.roundPosition();
+
+            //Debug.log(camera.entity.transform);
+            //else
+            //    camera.position += distance/2;
+
+            //    camera.position = Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, followLerp * Time.deltaTime);//.round();
+            //camera.entity.transform.roundPosition();
+            //} else
+            //{
+            //    camera.position = Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, 1f);//.round();
+            //    //camera.entity.transform.roundPosition();
+            //}
 
             if (mapLockEnabled)
             {

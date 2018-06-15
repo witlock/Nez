@@ -312,8 +312,8 @@ namespace Nez
 			if( !DebugConsole.instance.isOpen )
 				TimeRuler.instance.render();
 
-			#if !FNA
-			drawCalls = graphicsDevice.Metrics.DrawCount;
+#if !FNA
+            drawCalls = 0;//graphicsDevice.Metrics.DrawCount;
 			#endif
 			#endif
 		}

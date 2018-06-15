@@ -12,7 +12,6 @@ namespace Nez.TiledMaps
 			properties = new List<TmxProperty>();
 			tilesets = new List<TmxTileset>();
 			layers = new List<TmxLayer>();
-			objectGroups = new List<TmxObjectGroup>();
 		}
 
 		[XmlAttribute( AttributeName = "version" )]
@@ -48,12 +47,10 @@ namespace Nez.TiledMaps
 		[XmlElement( ElementName = "tileset" )]
 		public List<TmxTileset> tilesets;
 
-		[XmlElement( ElementName = "objectgroup" )]
-		public List<TmxObjectGroup> objectGroups;
-
 		[XmlElement( ElementName = "layer", Type = typeof( TmxTileLayer ) )]
 		[XmlElement( ElementName = "imagelayer", Type = typeof( TmxImageLayer ) )]
-		public List<TmxLayer> layers;
+        [XmlElement(ElementName = "objectgroup", Type = typeof( TmxObjectLayer ) )]
+        public List<TmxLayer> layers;
 
 		[XmlArray( "properties" )]
 		[XmlArrayItem( "property" )]

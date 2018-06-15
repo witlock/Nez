@@ -18,7 +18,7 @@ namespace Nez.TiledMaps
 	public class TiledMapProcessor : ContentProcessor<TmxMap,TmxMap>
 	{
 		public static ContentBuildLogger logger;
-
+        public static int mapId = 0;
 
 		public override TmxMap Process( TmxMap map, ContentProcessorContext context )
 		{
@@ -57,15 +57,126 @@ namespace Nez.TiledMaps
 				}
 			}
 
-			// deal with tilesets that have image collections
-			foreach( var tileset in map.tilesets )
-				setTilesetTextureIfNecessary( tileset, context );
+            // deal with tilesets that have image collections
+            //foreach( var tileset in map.tilesets )
+            //	setTilesetTextureIfNecessary( tileset, context );
 
-			return map;
+            setTilesetTextureIfNecessary(map.tilesets, context, mapId);
+            mapId++;
+
+
+            return map;
 		}
 
 
-		static void setTilesetTextureIfNecessary( TmxTileset tileset, ContentProcessorContext context )
+        static void setTilesetTextureIfNecessary(List<TmxTileset> tilesets, ContentProcessorContext context, int mapId)
+        {
+            context.Logger.LogMessage("\n\t Running OT Atlas combiner\n");
+
+            var imagePaths = new Dictionary<string,string>();//<string>();
+            var atlasFilename = "map-atlas.png";
+
+            foreach (TmxTileset tileset in tilesets)
+            {
+ 
+                //if (tileset.image != null)
+                //    continue;
+
+
+                if (tileset.image == null)
+                    tileset.isStandardTileset = false;
+                else
+                {
+                    imagePaths.Add(tileset.image.source, tileset.mapFolder);
+                }
+                
+
+                foreach (var tile in tileset.tiles)
+                {
+                    if (tile.image != null && !imagePaths.ContainsKey(tile.image.source))
+                        imagePaths.Add(tile.image.source, tileset.mapFolder);
+                }
+
+            }
+
+                context.Logger.LogMessage("\n\t --- need to pack images: {0}\n", imagePaths.Count);
+                var sourceSprites = new List<BitmapContent>();
+
+                // Loop over each input sprite filename
+                foreach (var inputFilename in imagePaths)
+                {
+                    // Store the name of this sprite.
+                    var spriteName = Path.GetFileName(inputFilename.Key);
+
+                    var absolutePath = PathHelper.getAbsolutePath(inputFilename.Key, inputFilename.Value);
+
+                    //context.Logger.LogMessage("map folder: " + inputFilename.Value);
+                    context.Logger.LogMessage("Adding texture: {0}", spriteName);
+
+                    // Load the sprite texture into memory.
+                    var textureReference = new ExternalReference<TextureContent>(absolutePath);
+                    var texture = context.BuildAndLoadAsset<TextureContent, TextureContent>(textureReference, "TextureProcessor");
+
+                    sourceSprites.Add(texture.Faces[0][0]);
+                }
+
+                var spriteRectangles = new List<Rectangle>();
+
+                // pack all the sprites into a single large texture.
+                var packedSprites = TextureAtlasPacker.packSprites(sourceSprites, spriteRectangles, false, context);
+                context.Logger.LogMessage("packed: {0}", packedSprites);
+
+                // save out a PNG with our atlas
+                var bm = new System.Drawing.Bitmap(packedSprites.Width, packedSprites.Height);
+                for (var x = 0; x < packedSprites.Width; x++)
+                {
+                    for (var y = 0; y < packedSprites.Height; y++)
+                    {
+                        var col = packedSprites.GetPixel(x, y);
+                        var color = System.Drawing.Color.FromArgb(col.A, col.R, col.G, col.B);
+                        bm.SetPixel(x, y, color);
+                    }
+                }
+                
+                bm.Save(Path.Combine(imagePaths.First().Value, atlasFilename), System.Drawing.Imaging.ImageFormat.Png);
+                context.Logger.LogImportantMessage("\n-- generated atlas {0}. Make sure you add it to the Pipeline tool!", atlasFilename);
+
+                foreach (TmxTileset tileset in tilesets)
+                {
+
+
+                    if (tileset.image != null)
+                    {
+                    tileset.bounds = spriteRectangles[imagePaths.Keys.ToList().IndexOf(tileset.image.source)];
+
+                    // set the new atlas as our tileset source image
+                    tileset.image = new TmxImage();
+                    tileset.image.source = atlasFilename;
+
+                    continue;
+                    }
+
+                // set the new atlas as our tileset source image
+                tileset.image = new TmxImage();
+                tileset.image.source = atlasFilename;
+
+                // last step: set the new atlas info and source rectangle for each tile
+                foreach (var tile in tileset.tiles)
+                    {
+
+
+                    if (tile.image == null)
+                            continue;
+
+                        tile.sourceRect = spriteRectangles[imagePaths.Keys.ToList().IndexOf(tile.image.source)];
+                    }
+
+                }
+
+        }
+
+
+        static void setTilesetTextureIfNecessary( TmxTileset tileset, ContentProcessorContext context )
 		{
 			if( tileset.image != null )
 				return;

@@ -25,9 +25,6 @@ namespace Nez.TiledMaps
 				foreach( var l in map.layers )
 					context.Logger.LogMessage( "Deserialized Layer: {0}", l );
 
-				foreach( var o in map.objectGroups )
-					context.Logger.LogMessage( "Deserialized ObjectGroup: {0}, object count: {1}", o.name, o.objects.Count );
-
 				context.Logger.LogMessage( "" );
 
 				for( var i = 0; i < map.tilesets.Count; i++ )
@@ -46,8 +43,12 @@ namespace Nez.TiledMaps
 							map.tilesets[i] = (TmxTileset)xmlSerializer.Deserialize( file );
 							map.tilesets[i].fixImagePath( filename, tileset.source );
 							map.tilesets[i].firstGid = tileset.firstGid;
-						}
-					}
+						    // fixes the issue of missing tilesets on terrains
+                            map.tilesets[i].mapFolder = Path.GetDirectoryName(Path.GetFullPath(filename));
+                        }
+                        
+					    
+                    }
 					else
 					{
 						tileset.mapFolder = Path.GetDirectoryName( Path.GetFullPath( filename ) );

@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System;
 using Nez.PipelineImporter;
-
+using Microsoft.Xna.Framework;
 
 namespace Nez.TiledMaps
 {
@@ -35,13 +35,10 @@ namespace Nez.TiledMaps
 		[XmlAttribute( AttributeName = "margin" )]
 		public int margin;
 
-		[XmlAttribute( AttributeName = "tilecount" )]
-		public int tileCount;
+        [XmlElement(ElementName = "bounds")]
+        public Rectangle bounds = new Rectangle();
 
-		[XmlAttribute( AttributeName = "columns" )]
-		public int columns;
-
-		[XmlElement( ElementName = "tileoffset" )]
+        [XmlElement( ElementName = "tileoffset" )]
 		public TmxTileOffset tileOffset;
 
 		[XmlElement( ElementName = "tile" )]
@@ -72,11 +69,14 @@ namespace Nez.TiledMaps
 		{
 			var mapDirectory = Path.GetDirectoryName( mapPath );
 			var tilesetDirectory = Path.GetDirectoryName( tilesetSource );
-			var imageDirectory = Path.GetDirectoryName( this.image.source );
-			var imageFile = Path.GetFileName( this.image.source );
-            
-			var newPath = Path.GetFullPath( Path.Combine( mapDirectory, tilesetDirectory, imageDirectory, imageFile ) );                        
-			image.source = Path.Combine( PathHelper.makeRelativePath( mapPath, newPath ) );
+		    if (tiles.Count == 0)
+		    {
+		        var imageDirectory = Path.GetDirectoryName(this.image.source);
+		        var imageFile = Path.GetFileName(this.image.source);
+
+		        var newPath = Path.GetFullPath(Path.Combine(mapDirectory, tilesetDirectory, imageDirectory, imageFile));
+		        image.source = Path.Combine(PathHelper.makeRelativePath(mapPath, newPath));
+		    }
 		}
 
 

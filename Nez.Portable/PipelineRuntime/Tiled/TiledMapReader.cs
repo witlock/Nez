@@ -47,16 +47,16 @@ namespace Nez.Tiled
 					texture = reader.ContentManager.Load<Texture2D>( textureAssetName );
 				}
 
-				var tileset = tiledMap.createTileset(
-										texture: texture,
-										firstId: reader.ReadInt32(),
-										tileWidth: reader.ReadInt32(),
-										tileHeight: reader.ReadInt32(),
-										isStandardTileset: isStandardTileset,
-										spacing: reader.ReadInt32(),
-										margin: reader.ReadInt32(),
-										tileCount: reader.ReadInt32(),
-										columns: reader.ReadInt32() );
+                var tileset = tiledMap.createTileset(
+                                        texture: texture,
+                                        firstId: reader.ReadInt32(),
+                                        tileWidth: reader.ReadInt32(),
+                                        tileHeight: reader.ReadInt32(),
+                                        isStandardTileset: isStandardTileset,
+                                        spacing: reader.ReadInt32(),
+                                        margin: reader.ReadInt32(),
+                                        bounds: new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32())
+                                        );
 				readCustomProperties( reader, tileset.properties );
 
 				// tiledset tile array
@@ -100,10 +100,6 @@ namespace Nez.Tiled
 			}
 
 
-			var objectGroupCount = reader.ReadInt32();
-			for( var i = 0; i < objectGroupCount; i++ )
-				readObjectGroup( reader, tiledMap );
-
 			return tiledMap;
 		}
 
@@ -129,6 +125,8 @@ namespace Nez.Tiled
 				layer = readTileLayer( reader, tiledMap, layerName );
 			else if( layerType == TiledLayerType.Image )
 				layer = readImageLayer( reader, tiledMap, layerName );
+            else if( layerType == TiledLayerType.Object )
+				layer = readObjectLayer( reader, tiledMap, layerName );
 			else
 				throw new NotSupportedException( string.Format( "Layer type {0} with name {1} is not supported", layerType, layerName ) );
 
@@ -204,15 +202,18 @@ namespace Nez.Tiled
 		}
 
 
-		static TiledObjectGroup readObjectGroup( ContentReader reader, TiledMap tiledMap )
+		static TiledObjectLayer readObjectLayer( ContentReader reader, TiledMap tileMap, string layerName )
 		{
-			var objectGroup = tiledMap.createObjectGroup(
-				reader.ReadString(), reader.ReadColor(), reader.ReadBoolean(), reader.ReadSingle() );
 
-			readCustomProperties( reader, objectGroup.properties );
+		    Color color = reader.ReadColor();
+            var properties = new Dictionary<string,string>();
+
+            readCustomProperties( reader, properties);
 
 			var objectCount = reader.ReadInt32();
-			objectGroup.objects = new TiledObject[objectCount];
+
+            var objects = new TiledObject[objectCount];
+
 			for( var i = 0; i < objectCount; i++ )
 			{
 				var obj = new TiledObject()
@@ -249,20 +250,38 @@ namespace Nez.Tiled
 					obj.tiledObjectType = TiledObject.TiledObjectType.Polyline;
 					obj.polyPoints = readVector2Array( reader );
 				}
-				else
+				else if(tiledObjectType == "tile")
+				{
+					obj.tiledObjectType = TiledObject.TiledObjectType.Tile;
+
+				    var flippedHorizonally = reader.ReadBoolean();
+				    var flippedVertically = reader.ReadBoolean();
+				    var flippedDiagonally = reader.ReadBoolean();
+
+                    obj.tile = new TiledTile(obj.gid)
+                    {
+                        flippedHorizonally = flippedHorizonally,
+                        flippedVertically = flippedVertically,
+                        flippedDiagonally = flippedDiagonally
+                    };
+                    obj.tile.tileset = tileMap.getTilesetForTileId(obj.gid);
+                }
+                else
 				{
 					obj.tiledObjectType = TiledObject.TiledObjectType.None;
-				}
+                }
 
-				obj.objectType = reader.ReadString();
 
 				readCustomProperties( reader, obj.properties );
 
-				objectGroup.objects[i] = obj;
+				objects[i] = obj;
 			}
 
-			return objectGroup;
-		}
+            var objectGroup = tileMap.createObjectLayer(layerName, color, objects);
+		    objectGroup.properties = properties;
+
+            return objectGroup;
+        }
 
 
 		static Vector2[] readVector2Array( ContentReader reader )

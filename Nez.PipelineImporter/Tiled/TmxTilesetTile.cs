@@ -20,7 +20,7 @@ namespace Nez.TiledMaps
 		public TmxImage image;
 
 		[XmlElement( ElementName = "objectgroup" )]
-		public List<TmxObjectGroup> objectGroups;
+		public List<TmxObjectLayer> objectGroups;
 
 		[XmlArray( "properties" )]
 		[XmlArrayItem( "property" )]

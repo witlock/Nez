@@ -21,7 +21,7 @@ namespace Nez
         /// <summary>
         /// how fast the camera closes the distance to the target position
         /// </summary>
-        public float followLerp = 0.05f;
+        public float followLerp = 0.1f;
 
         /// <summary>
         /// when in CameraWindow mode the width/height is used as a bounding box to allow movement within it without moving the camera.
@@ -51,9 +51,6 @@ namespace Nez
         CameraStyle _cameraStyle;
         RectangleF _worldSpaceDeadzone;
 
-        Vector2 currentTarget = new Vector2();
-        private bool newLocaton = true;
-        private bool initial = true;
 
         public FollowCamera(Entity targetEntity, Camera camera, CameraStyle cameraStyle = CameraStyle.LockOn)
         {
@@ -87,18 +84,8 @@ namespace Nez
 
         void IUpdatable.update()
         {
-            //Debug.log("{0} {1} ", camera.position, _targetEntity.name);
-            //camera.entity.position = _targetEntity.transform.position; //new Vector2(976,2500);//_targetEntity.transform.position;
-            //return;
-            //if ((camera.position - currentTarget).Length() < 200 || initial)
-            //    newLocaton = true;
-            //else
-            //{
-            //    return;
-            //}
-
             // translate the deadzone to be in world space
-            var halfScreen = entity.scene.sceneRenderTargetSize.ToVector2() * 0.5f;
+            var halfScreen = camera.bounds.size * 0.5f;
             _worldSpaceDeadzone.x = camera.position.X - halfScreen.X + deadzone.x + focusOffset.X;
             _worldSpaceDeadzone.y = camera.position.Y - halfScreen.Y + deadzone.y + focusOffset.Y;
             _worldSpaceDeadzone.width = deadzone.width;
@@ -107,46 +94,8 @@ namespace Nez
             if (_targetEntity != null)
                 updateFollow();
 
-            //if (initial)
-            //    initial = false;
-
-            //currentTarget = camera.position + _desiredPositionDelta;
-            //newLocaton = false;
-            //Debug.log(_desiredPositionDelta);
-            //Debug.log(((camera.position + _desiredPositionDelta) - camera.position).Length());
-            //_desiredPositionDelta.round();
-            //Debug.log("Set position: {0}", camera.position + _desiredPositionDelta);
-            //camera.setPosition(camera.position + _desiredPositionDelta);
-            //camera.position = Vector2.Lerp(camera.position, new Vector2(camera.position, (float)(-smiley[1] + smileyPos[1])), (float)0.05);
-            //if (((camera.position + _desiredPositionDelta) - camera.position).Length() > 10f)
-            //{
-            //    Debug.log(((camera.position + _desiredPositionDelta) - camera.position).Length());
-            //Core.schedule(0, t =>
-            //{
-            //    camera.entity.tweenLocalPositionTo(camera.position + _desiredPositionDelta,0.3f);
-            //});
-
-            var distance = _desiredPositionDelta;
-
-
-
-                //camera.position += distance.round();
-            
-
-            camera.position = Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta.round(), followLerp);
+            camera.position = SuperSmoothLerp(camera.position, _targetEntity.transform.position, camera.position + _desiredPositionDelta, Time.deltaTime, 3);//Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, followLerp);
             camera.entity.transform.roundPosition();
-
-            //Debug.log(camera.entity.transform);
-            //else
-            //    camera.position += distance/2;
-
-            //    camera.position = Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, followLerp * Time.deltaTime);//.round();
-            //camera.entity.transform.roundPosition();
-            //} else
-            //{
-            //    camera.position = Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, 1f);//.round();
-            //    //camera.entity.transform.roundPosition();
-            //}
 
             if (mapLockEnabled)
             {
@@ -239,6 +188,14 @@ namespace Nez
             }
         }
 
+        // maybe useful in the future
+        public static Vector2 SuperSmoothLerp(Vector2 followOld, Vector2 targetOld, Vector2 targetNew, float elapsedTime, float lerpAmount)
+        {
+            Vector2 f = followOld - targetOld + (targetNew - targetOld) / (lerpAmount * elapsedTime);
+            return targetNew - (targetNew - targetOld) / (lerpAmount * elapsedTime) + f * Mathf.exp(-lerpAmount * elapsedTime);
+        }
+
+
 
         public void follow(Entity targetEntity, CameraStyle cameraStyle = CameraStyle.CameraWindow)
         {
@@ -274,4 +231,3 @@ namespace Nez
 
     }
 }
-

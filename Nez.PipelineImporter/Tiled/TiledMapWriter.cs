@@ -167,6 +167,8 @@ namespace Nez.TiledMaps
                             //tile.flippedDiagonally = flippedDiagonally;
                         }
 
+                        // we need the object ID's to sync with server
+                        writer.Write(obj.id);
                         writer.Write(obj.gid);
                         writer.Write(obj.name ?? string.Empty);
                         writer.Write(obj.type ?? string.Empty);

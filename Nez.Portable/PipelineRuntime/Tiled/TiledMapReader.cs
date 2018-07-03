@@ -218,6 +218,7 @@ namespace Nez.Tiled
             {
                 var obj = new TiledObject()
                 {
+                    id = reader.ReadInt32(),
                     gid = reader.ReadInt32(),
                     name = reader.ReadString(),
                     type = reader.ReadString(),

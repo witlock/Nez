@@ -17,6 +17,8 @@ namespace Nez.Tiled
             Tile
         }
 
+        // for server sync
+        public int id;
         public int gid;
         public string name;
         public string type;

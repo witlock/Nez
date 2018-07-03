@@ -10,7 +10,10 @@ namespace Nez.TiledMaps
 		[XmlAttribute( AttributeName = "gid" )]
 		public uint gid;
 
-		[XmlAttribute( DataType = "string", AttributeName = "name" )]
+        [XmlAttribute(AttributeName = "id")]
+        public uint id;
+
+        [XmlAttribute( DataType = "string", AttributeName = "name" )]
 		public string name;
 
 		[XmlAttribute( DataType = "string", AttributeName = "type" )]

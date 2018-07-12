@@ -61,6 +61,7 @@
     <Compile Include="PipelineRuntime\Tiled\TiledIsometricTiledLayer.cs" />
     <Compile Include="PipelineRuntime\Tiled\TiledObjectLayer.cs" />
     <Compile Include="UI\Base\ICullable.cs" />
+    <Compile Include="UI\Widgets\ChatText.cs" />
     <Compile Include="UI\Widgets\ListView.cs" />
     <Compile Include="UI\Widgets\NumberField.cs" />
     <Compile Include="Utils\Emitter.cs" />

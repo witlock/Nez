@@ -339,6 +339,21 @@ namespace Nez.UI
             return _items;
         }
 
+        public void AddItem(T item)
+        {
+            float oldPrefWidth = _prefWidth, oldPrefHeight = _prefHeight;
+            _items.Add(item);
+            _filteredItems.Clear();
+            invalidate();
+            validate();
+            if (oldPrefWidth != _prefWidth || oldPrefHeight != _prefHeight)
+            {
+                invalidateHierarchy();
+                setSize(_prefWidth, _prefHeight);
+            }
+            _filteredItems.AddRange(_items);
+        }
+
 
         public float getItemHeight()
         {

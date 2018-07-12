@@ -58,7 +58,8 @@ namespace Nez.UI
 				height += listBackground.topHeight + listBackground.bottomHeight;
 
 			float heightAbove = _screenPosition.Y;
-			float heightBelow = Screen.height /*camera.viewportHeight */ - _screenPosition.Y - _selectBox.getHeight();
+			//float heightBelow = Screen.height /*camera.viewportHeight */ - _screenPosition.Y - _selectBox.getHeight();
+			float heightBelow = (Screen.height / stage.camera.rawZoom) - _screenPosition.Y - _selectBox.getHeight();
 			_isListBelowSelectBox = true;
 			if( height > heightBelow )
 			{

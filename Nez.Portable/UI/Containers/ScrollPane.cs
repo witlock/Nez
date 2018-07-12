@@ -1163,7 +1163,7 @@ namespace Nez.UI
 
 			// setup transform for this group.
 			if( transform )
-				applyTransform( graphics, computeTransform() );
+				applyTransform( graphics, computeTransform() * stage.camera.transformMatrix );
 
 			if( _scrollX )
 				_hKnobBounds.X = _hScrollBounds.X + (int)( ( _hScrollBounds.Width - _hKnobBounds.Width ) * getVisualScrollPercentX() );
@@ -1217,10 +1217,18 @@ namespace Nez.UI
 			if( _style.background != null )
 				_style.background.draw( graphics, 0, 0, getWidth(), getHeight(), color );
 
-			// caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
-			// project those to screen coordinates for OpenGL to consume.
-			var scissor = ScissorStack.calculateScissors( stage?.camera, graphics.batcher.transformMatrix, _widgetAreaBounds );
-			if( ScissorStack.pushScissors( scissor ) )
+            //_widgetAreaBounds.X = -(int)parent.x;
+            //_widgetAreaBounds.Y = -(int)parent.y;
+
+            // caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
+            // project those to screen coordinates for OpenGL to consume.
+            var scissor = ScissorStack.calculateScissors( stage?.camera, graphics.batcher.transformMatrix, _widgetAreaBounds );
+            scissor.X /= 4;
+            scissor.Y /= 2;
+            scissor.Width *= 1;
+            scissor.Height /= 2;
+            //scissor.Height *= 1.5f;
+            if ( ScissorStack.pushScissors( scissor ) )
 			{
 				graphics.batcher.enableScissorTest( true );
 				drawChildren( graphics, parentAlpha );
@@ -1259,7 +1267,7 @@ namespace Nez.UI
 		public override void debugRender( Graphics graphics )
 		{
 			if( transform )
-				applyTransform( graphics, computeTransform() );
+				applyTransform( graphics, computeTransform() * stage.camera.transformMatrix );
 
 			var scissor = ScissorStack.calculateScissors( stage?.camera, graphics.batcher.transformMatrix, _widgetAreaBounds );
 			if( ScissorStack.pushScissors( scissor ) )

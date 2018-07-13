@@ -117,11 +117,11 @@ namespace Nez.UI
 				return -1;
 
 			var top = 0f;
-			if( _style.background != null )
-			{
-				top += _style.background.topHeight + _style.background.bottomHeight;
-				mousePos.Y += _style.background.bottomHeight;
-			}
+			//if( _style.background != null )
+			//{
+			//	top += _style.background.topHeight + _style.background.bottomHeight;
+			//	mousePos.Y += _style.background.bottomHeight;
+			//}
 
 			var index = (int)( ( top + mousePos.Y ) / _itemHeight );
 			if( index < 0 || index > _items.Count - 1 )

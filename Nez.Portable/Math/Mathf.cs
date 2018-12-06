@@ -207,6 +207,24 @@ namespace Nez
 
 
 		/// <summary>
+		/// lerps an angle in radians between a and b. handles wrapping around 2*Pi
+		/// </summary>
+		/// <returns>The angle.</returns>
+		/// <param name="a">The alpha component.</param>
+		/// <param name="b">The blue component.</param>
+		/// <param name="t">T.</param>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static float lerpAngleRadians( float a, float b, float t )
+		{
+			float num = Mathf.repeat( b - a, MathHelper.TwoPi );
+			if( num > MathHelper.Pi )
+				num -= MathHelper.TwoPi;
+			
+			return a + num * clamp01( t );
+		}
+
+
+		/// <summary>
 		/// loops t so that it is never larger than length and never smaller than 0
 		/// </summary>
 		/// <param name="t">T.</param>
@@ -326,6 +344,39 @@ namespace Nez
 			if( start < end )
 				return Math.Min( start + shift, end );
 			return Math.Max( start - shift, end );
+		}
+
+		/// <summary>
+		/// moves start angle towards end angle by shift amount clamping the result and choosing the shortest path. start can be less than or greater than end.
+		/// example 1: start is 30, end is 100, shift is 25 results in 55
+		/// example 2: start is 340, end is 30, shift is 25 results in 5 (365 is wrapped to 5)
+		/// </summary>
+		/// <param name="start">Start.</param>
+		/// <param name="end">End.</param>
+		/// <param name="shift">Shift.</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float approachAngle( float start, float end, float shift )
+		{
+			float deltaAngle = Mathf.deltaAngle( start, end );
+			if ( -shift < deltaAngle && deltaAngle < shift )
+				return end;
+			return repeat( approach( start, start + deltaAngle, shift ), 360f );
+		}
+
+		/// <summary>
+		/// moves start angle towards end angle by shift amount (all in radians) clamping the result and choosing the shortest path. start can be less than or greater than end.
+		/// this method works very similar to approachAngle, the only difference is use of radians instead of degrees and wrapping at 2*Pi instead of 360.
+		/// </summary>
+		/// <param name="start">Start.</param>
+		/// <param name="end">End.</param>
+		/// <param name="shift">Shift.</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static float approachAngleRadians( float start, float end, float shift )
+		{
+			float deltaAngleRadians = Mathf.deltaAngleRadians( start, end );
+			if ( -shift < deltaAngleRadians && deltaAngleRadians < shift )
+				return end;
+			return repeat( approach( start, start + deltaAngleRadians, shift ), MathHelper.TwoPi );
 		}
 
 
@@ -709,6 +760,26 @@ namespace Nez
 
 
 		/// <summary>
+		/// the rotation is relative to the current position not the total rotation. For example, if you are currently at 1 Pi radians and
+		/// want to rotate to 1.5 Pi radians, you would use an angle of 0.5 Pi, not 1.5 Pi.
+		/// </summary>
+		/// <returns>The around.</returns>
+		/// <param name="point">Point.</param>
+		/// <param name="center">Center.</param>
+		/// <param name="angleInDegrees">Angle in radians.</param>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static Vector2 rotateAroundRadians( Vector2 point, Vector2 center, float angleInRadians )
+		{
+			var cos = Mathf.cos( angleInRadians );
+			var sin = Mathf.sin( angleInRadians );
+			var rotatedX = cos * ( point.X - center.X ) - sin * ( point.Y - center.Y ) + center.X;
+			var rotatedY = sin * ( point.X - center.X ) + cos * ( point.Y - center.Y ) + center.Y;
+
+			return new Vector2( rotatedX, rotatedY );
+		}
+
+
+		/// <summary>
 		/// gets a point on the circumference of the circle given its center, radius and angle. 0 degrees is 3 o'clock.
 		/// </summary>
 		/// <returns>The on circle.</returns>
@@ -723,6 +794,24 @@ namespace Nez
 			{
 				X = cos( radians ) * radius + circleCenter.X,
 				Y = sin( radians ) * radius + circleCenter.Y
+			};
+		}
+
+
+		/// <summary>
+		/// gets a point on the circumference of the circle given its center, radius and angle. 0 radians is 3 o'clock.
+		/// </summary>
+		/// <returns>The on circle.</returns>
+		/// <param name="circleCenter">Circle center.</param>
+		/// <param name="radius">Radius.</param>
+		/// <param name="angleInDegrees">Angle in radians.</param>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		public static Vector2 pointOnCircleRadians( Vector2 circleCenter, float radius, float angleInRadians )
+		{
+			return new Vector2
+			{
+				X = cos( angleInRadians ) * radius + circleCenter.X,
+				Y = sin( angleInRadians ) * radius + circleCenter.Y
 			};
 		}
 

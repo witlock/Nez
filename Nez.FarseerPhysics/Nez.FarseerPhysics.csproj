@@ -184,9 +184,8 @@
       <Name>Nez</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Reference Include="MonoGame.Framework">
+    <Reference Include="MonoGame.Framework, Version=3.7.0.1708, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.Portable.3.7.0.1708\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>

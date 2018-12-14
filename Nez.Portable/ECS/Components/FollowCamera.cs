@@ -50,7 +50,7 @@ namespace Nez
         Vector2 _desiredPositionDelta;
         CameraStyle _cameraStyle;
         RectangleF _worldSpaceDeadzone;
-
+        Vector3 currentVelocity = new Vector3(0, 0, 0);
 
         public FollowCamera(Entity targetEntity, Camera camera, CameraStyle cameraStyle = CameraStyle.LockOn)
         {
@@ -93,8 +93,11 @@ namespace Nez
 
             if (_targetEntity != null)
                 updateFollow();
-
-            camera.position = SuperSmoothLerp(camera.position, _targetEntity.transform.position, camera.position + _desiredPositionDelta, Time.deltaTime, 3);//Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, followLerp);
+            
+            camera.position = SmoothDamp(camera.position.toVector3(), _targetEntity.transform.position.toVector3(), ref currentVelocity, 0.3f, 200000f, Time.deltaTime).toVector2();
+            
+            //Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, followLerp);
+            //camera.position = SuperSmoothLerp(camera.position, _targetEntity.transform.position, camera.position + _desiredPositionDelta, Time.deltaTime, 3);//Vector2.Lerp(camera.position, camera.position + _desiredPositionDelta, followLerp);
             camera.entity.transform.roundPosition();
 
             if (mapLockEnabled)
@@ -195,6 +198,43 @@ namespace Nez
             return targetNew - (targetNew - targetOld) / (lerpAmount * elapsedTime) + f * Mathf.exp(-lerpAmount * elapsedTime);
         }
 
+        // Gradually changes a vector towards a desired goal over time.
+        public static Vector3 SmoothDamp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed, float deltaTime)
+        {
+            smoothTime = Math.Max(0.0001F, smoothTime);
+            float omega = 2F / smoothTime;
+
+            float x = omega * deltaTime;
+            float exp = 1F / (1F + x + 0.48F * x * x + 0.235F * x * x * x);
+            Vector3 change = current - target;
+            Vector3 originalTo = target;
+
+            float maxChange = maxSpeed * smoothTime;
+            change = ClampMagnitude(change, maxChange);
+            target = current - change;
+
+            Vector3 temp = (currentVelocity + omega * change) * deltaTime;
+            currentVelocity = (currentVelocity - omega * temp) * exp;
+            Vector3 output = target + (change + temp) * exp;
+
+            if (Vector3.Dot(originalTo - current, output - originalTo) > 0)
+            {
+                output = originalTo;
+                currentVelocity = (output - originalTo) / deltaTime;
+            }
+
+            return output;
+        }
+
+        // Returns a copy of /vector/ with its magnitude clamped to /maxLength/.
+        public static Vector3 ClampMagnitude(Vector3 vector, float maxLength)
+        {
+            if (SqrMagnitude(vector) > maxLength * maxLength)
+                return Vector3.Normalize(vector) * maxLength;
+            return vector;
+        }
+
+        public static float SqrMagnitude(Vector3 vector) { return vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z; }
 
 
         public void follow(Entity targetEntity, CameraStyle cameraStyle = CameraStyle.CameraWindow)

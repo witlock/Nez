@@ -9,7 +9,8 @@ namespace Nez.Sprites
 	{
 		RemainOnFinalFrame,
 		RevertToFirstFrame,
-		HideSprite
+		HideSprite,
+        Stop,
 	}
 
 

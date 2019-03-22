@@ -116,6 +116,11 @@ namespace Nez.Tiled
 	        }
 
         }
+
+        public override void draw(Batcher batcher, Vector2 position, Vector2 scale, float layerDepth, RectangleF cameraClipBounds)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

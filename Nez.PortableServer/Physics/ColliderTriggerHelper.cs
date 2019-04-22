@@ -90,7 +90,7 @@ namespace Nez
 		void notifyTriggerListeners( Pair<Collider> collisionPair, bool isEntering )
 		{
 			// call the onTriggerEnter method for any relevant components
-			collisionPair.first.entity.getComponents( _tempTriggerList );
+			collisionPair.first?.entity?.getComponents( _tempTriggerList );
 			for( var i = 0; i < _tempTriggerList.Count; i++ )
 			{
 				if( isEntering )

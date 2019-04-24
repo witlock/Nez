@@ -339,7 +339,7 @@ namespace Nez
 		{}
 
 
-		internal void begin()
+		public void begin()
 		{
 
 			Physics.reset();

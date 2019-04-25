@@ -57,12 +57,16 @@ namespace Nez.TiledMaps
 				}
 			}
 
+            string mapIdS = map.properties.Where(p => p.name == "map_id").Select(v => v.value).FirstOrDefault();
+
+            if (mapIdS != "" && mapIdS != null)
+                mapId = int.Parse(mapIdS);
+
             // deal with tilesets that have image collections
             //foreach( var tileset in map.tilesets )
             //	setTilesetTextureIfNecessary( tileset, context );
 
             setTilesetTextureIfNecessary(map.tilesets, context, mapId);
-            mapId++;
 
 
             return map;
@@ -74,7 +78,7 @@ namespace Nez.TiledMaps
             context.Logger.LogMessage("\n\t Running OT Atlas combiner\n");
 
             var imagePaths = new Dictionary<string,string>();//<string>();
-            var atlasFilename = "map-atlas.png";
+            var atlasFilename = $"map-atlas-{mapId}.png";
 
             foreach (TmxTileset tileset in tilesets)
             {

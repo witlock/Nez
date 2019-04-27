@@ -11,6 +11,7 @@ namespace Nez.Sprites
 		RevertToFirstFrame,
 		HideSprite,
         Stop,
+        Destroy
 	}
 
 

@@ -54,6 +54,7 @@
     <Compile Include="Input\GamePadData.cs" />
     <Compile Include="Input\Input.cs" />
     <Compile Include="Math\Mathf.cs" />
+    <Compile Include="Math\SubpixelVector2.cs" />
     <Compile Include="Physics\Collisions.cs" />
     <Compile Include="Physics\Physics.cs" />
     <Compile Include="Physics\Ray2D.cs" />

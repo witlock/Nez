@@ -161,6 +161,13 @@ namespace Nez.UI
                 _prefWidth += background.leftWidth + background.rightWidth;
                 _prefHeight += background.topHeight + background.bottomHeight;
             }
+
+            for (int i = 0, n = _items.Count; i < n; i++)
+            {
+                var child = _items[i];
+                if (child is ILayout)
+                    ((ILayout)child).validate();
+            }
         }
 
 
@@ -169,7 +176,11 @@ namespace Nez.UI
             _filteredItems.Clear();
 
             if (filterText.Length == 0)
+            {
                 _filteredItems.AddRange(_items);
+                return;
+            }
+                
 
             for (int i = 0; i < _items.Count; i++)
             {

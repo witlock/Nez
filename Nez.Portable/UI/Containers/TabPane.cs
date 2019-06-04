@@ -140,6 +140,11 @@ namespace Nez.UI
 
         public Action onClick;
 
+        public Label GetLabel()
+        {
+            return text;
+        }
+
         public TabButton( Tab tab, TabButtonStyle style )
         {
             this.style = style;

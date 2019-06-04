@@ -1223,10 +1223,10 @@ namespace Nez.UI
             // caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
             // project those to screen coordinates for OpenGL to consume.
             var scissor = ScissorStack.calculateScissors( stage?.camera, graphics.batcher.transformMatrix, _widgetAreaBounds );
-            scissor.X /= 4;
-            scissor.Y /= 2;
-            scissor.Width *= 1;
-            scissor.Height /= 2;
+            //scissor.X /= 4;
+            //scissor.Y /= 2;
+            ////scissor.Width *= 1;
+            //scissor.Height /= 2;
             //scissor.Height *= 1.5f;
             if ( ScissorStack.pushScissors( scissor ) )
 			{

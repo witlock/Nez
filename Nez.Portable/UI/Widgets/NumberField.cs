@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Nez.BitmapFonts;
 
-namespace Nez.UI.Widgets
+namespace Nez.UI
 {
     public class NumberField : Table, IInputListener
     {
+        public event Action<NumberField, float> onNumberChanged = delegate { };
         TextButton decrease;
         TextButton increase;
         TextField field;
@@ -26,8 +27,10 @@ namespace Nez.UI.Widgets
             SetMin(min);
             SetMax(max);
             SetStep(step);
+
             field = new TextField(initial.ToString(), this.style);
             field.setAlignment(Align.center);
+            setNumber(initial);
             if (showButtons)
             {
                 decrease = new TextButton("", style.DecreaseButtonStyle);
@@ -55,6 +58,7 @@ namespace Nez.UI.Widgets
                 {
                     setNumber(minimum);
                 }
+
             };
 
             if (showButtons)
@@ -126,6 +130,8 @@ namespace Nez.UI.Widgets
         {
             field.setTextForced(value.ToString());
             number = value;
+
+            onNumberChanged(this, value);
         }
 
         public float getNumber()

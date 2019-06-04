@@ -84,9 +84,9 @@ namespace Nez
 		{
 			// translate the deadzone to be in world space
 			var halfScreen = camera.bounds.size * 0.5f;
-			_worldSpaceDeadzone.x = camera.position.X - halfScreen.X + deadzone.x + focusOffset.X;
-			_worldSpaceDeadzone.y = camera.position.Y - halfScreen.Y + deadzone.y + focusOffset.Y;
-			_worldSpaceDeadzone.width = deadzone.width;
+            _worldSpaceDeadzone.x = camera.position.X - halfScreen.X * camera.rawZoom + deadzone.x + focusOffset.X;
+            _worldSpaceDeadzone.y = camera.position.Y - halfScreen.Y * camera.rawZoom + deadzone.y + focusOffset.Y;
+            _worldSpaceDeadzone.width = deadzone.width;
 			_worldSpaceDeadzone.height = deadzone.height;
 
 			if( _targetEntity != null )

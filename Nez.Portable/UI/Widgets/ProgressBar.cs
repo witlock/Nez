@@ -20,7 +20,7 @@ namespace Nez.UI
 				if( _vertical )
 					return Math.Max( style.knob == null ? 0 : style.knob.minWidth, style.background != null ? style.background.minWidth : 0 );
 				else
-					return 140;
+					return width;
 			}
 		}
 
@@ -29,7 +29,7 @@ namespace Nez.UI
 			get
 			{
 				if( _vertical )
-					return 140;
+					return height;
 				else
 					return Math.Max( style.knob == null ? 0 : style.knob.minHeight, style.background != null ? style.background.minHeight : 0 );
 			}
@@ -248,8 +248,8 @@ namespace Nez.UI
 				if( bg != null )
 				{
 					bg.draw( graphics, x, y + (int)( ( height - bg.minHeight ) * 0.5f ), width, bg.minHeight, color );
-					bgLeftWidth = bg.leftWidth;
-					positionWidth -= bgLeftWidth + bg.rightWidth;
+					//bgLeftWidth = bg.leftWidth;
+					//positionWidth -= bgLeftWidth + bg.rightWidth;
 				}
 
 				float knobWidthHalf = 0;

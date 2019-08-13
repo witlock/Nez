@@ -11,7 +11,7 @@ namespace Nez
 	public class ProjectileMover : Component
 	{
         List<ITriggerListener> _tempTriggerList = new List<ITriggerListener>();
-        List<Collider> _colliders;
+        List<Collider> _colliders = new List<Collider>();
 
 
         public override void onAddedToEntity()

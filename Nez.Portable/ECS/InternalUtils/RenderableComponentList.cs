@@ -40,7 +40,8 @@ namespace Nez
 		public void remove( IRenderable component )
 		{
 			_components.remove( component );
-			_componentsByRenderLayer[component.renderLayer].remove( component );
+            if(_componentsByRenderLayer.ContainsKey(component.renderLayer))
+            _componentsByRenderLayer[component.renderLayer].remove( component );
 		}
 
 

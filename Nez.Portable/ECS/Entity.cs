@@ -283,7 +283,7 @@ namespace Nez
 		public void destroy()
 		{
 			_isDestroyed = true;
-			scene.entities.remove( this );
+			scene?.entities.remove( this );
 			transform.parent = null;
 
 			// destroy any children we have

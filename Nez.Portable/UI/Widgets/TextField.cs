@@ -307,11 +307,14 @@ namespace Nez.UI
 					}
 			}
 
-			if( key == Keys.Tab && focusTraversal )
+			if(key == Keys.Tab && focusTraversal)
 			{
+                next(InputUtils.isShiftDown());
+            }
+            else if (key == Keys.Tab)
+            {
                 onTabPressed(this);
-                next( InputUtils.isShiftDown() );
-			}
+            }
 			else
 			{
 				var enterPressed = key == Keys.Enter;

@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework.Content.Pipeline;
-using Nez.UI;
+﻿using Microsoft.Xna.Framework.Content.Pipeline;
 using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -8,21 +6,22 @@ using System.Collections.Generic;
 
 namespace Nez.UISkinImporter
 {
-	[ContentImporter( ".uiskin", DefaultProcessor = "UISkinProcessor", DisplayName = "UISkin Importer" )]
-	public class UISkinImporter : ContentImporter<IDictionary<string,object>>
+	[ContentImporter(".uiskin", DefaultProcessor = "UISkinProcessor", DisplayName = "UISkin Importer")]
+	public class UISkinImporter : ContentImporter<IDictionary<string, object>>
 	{
-		public static ContentBuildLogger logger;
+		public static ContentBuildLogger Logger;
 
 
-		public override IDictionary<string,object> Import( string filename, ContentImporterContext context )
+		public override IDictionary<string, object> Import(string filename, ContentImporterContext context)
 		{
-			logger = context.Logger;
-			logger.LogMessage( "Importing uiskin file: {0}", filename );
+			Logger = context.Logger;
+			Logger.LogMessage("Importing uiskin file: {0}", filename);
 
-			using( var reader = new StreamReader( filename ) )
+			using (var reader = new StreamReader(filename))
 			{
-				var ret = JsonConvert.DeserializeObject<IDictionary<string,object>>( reader.ReadToEnd(), new JsonConverter[] {new JsonDictionaryConverter()} );
-                return ret;
+				var ret = JsonConvert.DeserializeObject<IDictionary<string, object>>(reader.ReadToEnd(),
+					new JsonConverter[] {new JsonDictionaryConverter()});
+				return ret;
 			}
 		}
 	}

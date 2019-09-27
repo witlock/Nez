@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Nez
 {
-	public class NineSliceSprite : Sprite
+	public class NineSliceSprite : SpriteRenderer
 	{
-		public new float width
+		public new float Width
 		{
 			get => _finalRenderRect.Width;
 			set
@@ -18,7 +18,7 @@ namespace Nez
 			}
 		}
 
-		public new float height
+		public new float Height
 		{
 			get => _finalRenderRect.Height;
 			set
@@ -28,15 +28,15 @@ namespace Nez
 			}
 		}
 
-		public override RectangleF bounds
+		public override RectangleF Bounds
 		{
 			get
 			{
-				if( _areBoundsDirty )
+				if (_areBoundsDirty)
 				{
-					_bounds.location = entity.transform.position + _localOffset;
-					_bounds.width = width;
-					_bounds.height = height;
+					_bounds.Location = Entity.Transform.Position + _localOffset;
+					_bounds.Width = Width;
+					_bounds.Height = Height;
 					_areBoundsDirty = false;
 				}
 
@@ -44,48 +44,53 @@ namespace Nez
 			}
 		}
 
-		public new NinePatchSubtexture subtexture;
+		public new NinePatchSprite Sprite;
 
 
 		/// <summary>
 		/// full area in which we will be rendering
 		/// </summary>
 		Rectangle _finalRenderRect;
+
 		Rectangle[] _destRects = new Rectangle[9];
 		bool _destRectsDirty = true;
 
 
-		public NineSliceSprite( NinePatchSubtexture subtexture ) : base( subtexture )
+		public NineSliceSprite(NinePatchSprite sprite) : base(sprite)
 		{
-			this.subtexture = subtexture;
+			Sprite = sprite;
 		}
 
-		public NineSliceSprite( Subtexture subtexture, int top, int bottom, int left, int right ) : this( new NinePatchSubtexture( subtexture, left, right, top, bottom ) )
-		{}
+		public NineSliceSprite(Sprite sprite, int top, int bottom, int left, int right) : this(
+			new NinePatchSprite(sprite, left, right, top, bottom))
+		{ }
 
-		public NineSliceSprite( Texture2D texture, int top, int bottom, int left, int right ) : this( new NinePatchSubtexture( texture, left, right, top, bottom) )
-		{}
+		public NineSliceSprite(Texture2D texture, int top, int bottom, int left, int right) : this(
+			new NinePatchSprite(texture, left, right, top, bottom))
+		{ }
 
-		public override void render( Graphics graphics, Camera camera )
+		public override void Render(Batcher batcher, Camera camera)
 		{
-			if( _destRectsDirty )
+			if (_destRectsDirty)
 			{
+<<<<<<< HEAD
 				subtexture.generateNinePatchRects( _finalRenderRect, _destRects, subtexture.left*2, subtexture.right*2, subtexture.top*2, subtexture.bottom*2);
+=======
+				Sprite.GenerateNinePatchRects(_finalRenderRect, _destRects, Sprite.Left, Sprite.Right, Sprite.Top, Sprite.Bottom);
+>>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 				_destRectsDirty = false;
 			}
 
-			var pos = ( entity.transform.position + _localOffset ).ToPoint();
+			var pos = (Entity.Transform.Position + _localOffset).ToPoint();
 
-			for( var i = 0; i < 9; i++ )
+			for (var i = 0; i < 9; i++)
 			{
 				// shift our destination rect over to our position
 				var dest = _destRects[i];
 				dest.X += pos.X;
 				dest.Y += pos.Y;
-				graphics.batcher.draw( subtexture, dest, subtexture.ninePatchRects[i], color );
+				batcher.Draw(Sprite, dest, Sprite.NinePatchRects[i], Color);
 			}
 		}
-
 	}
 }
-

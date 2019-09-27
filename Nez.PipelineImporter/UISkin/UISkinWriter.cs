@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
+﻿using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using Nez.UI;
 using Microsoft.Xna.Framework.Content.Pipeline;
 
@@ -9,60 +8,51 @@ namespace Nez.UISkinImporter
 	[ContentTypeWriter]
 	public class UISkinWriter : ContentTypeWriter<UISkinConfig>
 	{
-		protected override void Write( ContentWriter writer, UISkinConfig data )
+		protected override void Write(ContentWriter writer, UISkinConfig data)
 		{
-			if( data.colors != null )
+			if (data.Colors != null)
 			{
-				writer.Write( true );
-				writer.WriteObject( data.colors );
+				writer.Write(true);
+				writer.WriteObject(data.Colors);
 			}
 			else
 			{
-				writer.Write( false );
+				writer.Write(false);
 			}
 
-			if( data.textureAtlases != null )
+			if (data.TextureAtlases != null)
 			{
-				writer.Write( true );
-				writer.WriteObject( data.textureAtlases );
+				writer.Write(true);
+				writer.WriteObject(data.TextureAtlases);
 			}
 			else
 			{
-				writer.Write( false );
+				writer.Write(false);
 			}
 
-			if( data.libGdxAtlases != null )
-			{
-				writer.Write( true );
-				writer.WriteObject( data.libGdxAtlases );
-			}
-			else
-			{
-				writer.Write( false );
-			}
+			writer.Write(false);
 
-			if( data.styles != null )
+			if (data.Styles != null)
 			{
-				writer.Write( true );
-				writer.WriteObject( data.styles );
+				writer.Write(true);
+				writer.WriteObject(data.Styles);
 			}
 			else
 			{
-				writer.Write( false );
+				writer.Write(false);
 			}
 		}
 
 
-		public override string GetRuntimeType( TargetPlatform targetPlatform )
+		public override string GetRuntimeType(TargetPlatform targetPlatform)
 		{
-			return typeof( Nez.UI.UISkinConfig ).AssemblyQualifiedName;
+			return typeof(Nez.UI.UISkinConfig).AssemblyQualifiedName;
 		}
 
 
-		public override string GetRuntimeReader( TargetPlatform targetPlatform )
+		public override string GetRuntimeReader(TargetPlatform targetPlatform)
 		{
-			return typeof( Nez.UI.UISkinConfigReader ).AssemblyQualifiedName;
+			return typeof(Nez.UI.UISkinConfigReader).AssemblyQualifiedName;
 		}
 	}
 }
-

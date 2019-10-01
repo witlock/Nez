@@ -284,13 +284,10 @@ namespace Nez
 		public void Destroy()
 		{
 			_isDestroyed = true;
-<<<<<<< HEAD
-			scene?.entities.remove( this );
-			transform.parent = null;
-=======
-			Scene.Entities.Remove(this);
+
+			Scene?.Entities.Remove(this);
 			Transform.Parent = null;
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
+
 
 			// destroy any children we have
 			for (var i = Transform.ChildCount - 1; i >= 0; i--)

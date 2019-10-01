@@ -1213,13 +1213,8 @@ namespace Nez.UI
 			Validate();
 
 			// setup transform for this group.
-<<<<<<< HEAD
 			if( transform )
-				applyTransform( graphics, computeTransform() * stage.camera.transformMatrix );
-=======
-			if (transform)
-				ApplyTransform(batcher, ComputeTransform());
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
+				ApplyTransform(batcher, ComputeTransform() * _stage.Camera.TransformMatrix );
 
 			if (_scrollX)
 				_hKnobBounds.X = _hScrollBounds.X +
@@ -1325,13 +1320,8 @@ namespace Nez.UI
 
 		public override void DebugRender(Batcher batcher)
 		{
-<<<<<<< HEAD
 			if( transform )
-				applyTransform( graphics, computeTransform() * stage.camera.transformMatrix );
-=======
-			if (transform)
-				ApplyTransform(batcher, ComputeTransform());
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
+                ApplyTransform(batcher, ComputeTransform() * _stage.Camera.TransformMatrix );
 
 			var scissor =
 				ScissorStack.CalculateScissors(_stage?.Camera, batcher.TransformMatrix, _widgetAreaBounds);

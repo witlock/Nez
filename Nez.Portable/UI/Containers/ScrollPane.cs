@@ -1276,26 +1276,11 @@ namespace Nez.UI
 			if (_style.Background != null)
 				_style.Background.Draw(batcher, 0, 0, GetWidth(), GetHeight(), color);
 
-<<<<<<< HEAD
-            //_widgetAreaBounds.X = -(int)parent.x;
-            //_widgetAreaBounds.Y = -(int)parent.y;
-
-            // caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
-            // project those to screen coordinates for OpenGL to consume.
-            var scissor = ScissorStack.calculateScissors( stage?.camera, graphics.batcher.transformMatrix, _widgetAreaBounds );
-            //scissor.X /= 4;
-            //scissor.Y /= 2;
-            ////scissor.Width *= 1;
-            //scissor.Height /= 2;
-            //scissor.Height *= 1.5f;
-            if ( ScissorStack.pushScissors( scissor ) )
-=======
 			// caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 			// project those to screen coordinates for OpenGL to consume.
 			var scissor =
 				ScissorStack.CalculateScissors(_stage?.Camera, batcher.TransformMatrix, _widgetAreaBounds);
 			if (ScissorStack.PushScissors(scissor))
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 			{
 				batcher.EnableScissorTest(true);
 				DrawChildren(batcher, parentAlpha);

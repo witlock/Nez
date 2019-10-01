@@ -38,17 +38,12 @@ namespace Nez
 
 		public void Remove(IRenderable component)
 		{
-<<<<<<< HEAD
-			_components.remove( component );
-            if(_componentsByRenderLayer.ContainsKey(component.renderLayer))
-            _componentsByRenderLayer[component.renderLayer].remove( component );
-=======
 			_components.Remove(component);
+            if(_componentsByRenderLayer.ContainsKey(component.RenderLayer))
 			_componentsByRenderLayer[component.RenderLayer].Remove(component);
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
-		}
+        }
 
-		public void UpdateRenderableRenderLayer(IRenderable component, int oldRenderLayer, int newRenderLayer)
+        public void UpdateRenderableRenderLayer(IRenderable component, int oldRenderLayer, int newRenderLayer)
 		{
 			// a bit of care needs to be taken in case a renderLayer is changed before the component is "live". this can happen when a component
 			// changes its renderLayer immediately after being created

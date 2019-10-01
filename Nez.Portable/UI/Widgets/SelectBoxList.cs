@@ -60,12 +60,9 @@ namespace Nez.UI
 				height += listBackground.TopHeight + listBackground.BottomHeight;
 
 			float heightAbove = _screenPosition.Y;
-<<<<<<< HEAD
-			//float heightBelow = Screen.height /*camera.viewportHeight */ - _screenPosition.Y - _selectBox.getHeight();
-			float heightBelow = (Screen.height / stage.camera.rawZoom) - _screenPosition.Y - _selectBox.getHeight();
-=======
-			float heightBelow = Screen.Height /*camera.viewportHeight */ - _screenPosition.Y - _selectBox.GetHeight();
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
+
+			float heightBelow = (Screen.Height / stage.Camera.RawZoom) - _screenPosition.Y - _selectBox.GetHeight();
+
 			_isListBelowSelectBox = true;
 			if (height > heightBelow)
 			{

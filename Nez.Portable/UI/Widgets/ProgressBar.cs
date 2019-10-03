@@ -28,13 +28,9 @@ namespace Nez.UI
 		{
 			get
 			{
-<<<<<<< HEAD
 				if( _vertical )
 					return height;
-=======
-				if (_vertical)
-					return 140;
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
+
 				else
 					return Math.Max(style.Knob == null ? 0 : style.Knob.MinHeight,
 						style.Background != null ? style.Background.MinHeight : 0);
@@ -261,15 +257,9 @@ namespace Nez.UI
 				float bgLeftWidth = 0;
 				if (bg != null)
 				{
-<<<<<<< HEAD
-					bg.draw( graphics, x, y + (int)( ( height - bg.minHeight ) * 0.5f ), width, bg.minHeight, color );
-					//bgLeftWidth = bg.leftWidth;
-					//positionWidth -= bgLeftWidth + bg.rightWidth;
-=======
 					bg.Draw(batcher, x, y + (int) ((height - bg.MinHeight) * 0.5f), width, bg.MinHeight, color);
 					bgLeftWidth = bg.LeftWidth;
 					positionWidth -= bgLeftWidth + bg.RightWidth;
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 				}
 
 				float knobWidthHalf = 0;

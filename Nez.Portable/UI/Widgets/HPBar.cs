@@ -22,7 +22,7 @@ namespace Nez.UI
             get
             {
                 if (_vertical)
-                    return Math.Max(style.knob == null ? 0 : style.knob.MinWidth, style.background != null ? style.background.MinWidth : 0);
+                    return Math.Max(style.Knob == null ? 0 : style.Knob.MinWidth, style.Background != null ? style.Background.MinWidth : 0);
                 else
                     return width;
             }
@@ -35,7 +35,7 @@ namespace Nez.UI
                 if (_vertical)
                     return height;
                 else
-                    return Math.Max(style.knob == null ? 0 : style.knob.MinHeight, style.background != null ? style.background.MinHeight : 0);
+                    return Math.Max(style.Knob == null ? 0 : style.Knob.MinHeight, style.Background != null ? style.Background.MinHeight : 0);
             }
         }
 
@@ -175,16 +175,16 @@ namespace Nez.UI
 
         protected virtual Nez.UI.IDrawable getKnobDrawable()
         {
-            return (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+            return (disabled && style.DisabledKnob != null) ? style.DisabledKnob : style.Knob;
         }
 
 
         public override void Draw(Batcher batcher, float parentAlpha)
         {
             var knob = getKnobDrawable();
-            var bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
-            var knobBefore = (disabled && style.disabledKnobBefore != null) ? style.disabledKnobBefore : style.knobBefore;
-            var knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter : style.knobAfter;
+            var bg = (disabled && style.DisabledBackground != null) ? style.DisabledBackground : style.Background;
+            var knobBefore = (disabled && style.DisabledKnobBefore != null) ? style.DisabledKnobBefore : style.KnobBefore;
+            var knobAfter = (disabled && style.DisabledKnobAfter != null) ? style.DisabledKnobAfter : style.KnobAfter;
 
             var x = this.x;
             var y = this.y;
@@ -332,22 +332,22 @@ namespace Nez.UI
         /// <summary>
         /// The progress bar background, stretched only in one direction. Optional.
         /// </summary>
-        public Nez.UI.IDrawable background;
+        public Nez.UI.IDrawable Background;
 
         /// <summary>
         /// Optional
         /// </summary>
-        public Nez.UI.IDrawable disabledBackground;
+        public Nez.UI.IDrawable DisabledBackground;
 
         /// <summary>
         /// Optional, centered on the background.
         /// </summary>
-        public Nez.UI.IDrawable knob, disabledKnob;
+        public Nez.UI.IDrawable Knob, DisabledKnob;
 
         /// <summary>
         /// Optional
         /// </summary>
-        public Nez.UI.IDrawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
+        public Nez.UI.IDrawable KnobBefore, KnobAfter, DisabledKnobBefore, DisabledKnobAfter;
 
 
         public HPBarStyle()
@@ -357,8 +357,8 @@ namespace Nez.UI
 
         public HPBarStyle(Nez.UI.IDrawable background, Nez.UI.IDrawable knob)
         {
-            this.background = background;
-            this.knob = knob;
+            this.Background = background;
+            this.Knob = knob;
         }
 
 
@@ -372,8 +372,8 @@ namespace Nez.UI
 
             return new HPBarStyle
             {
-                knobBefore = knobBefore,
-                knobAfter = knobAfter
+                KnobBefore = knobBefore,
+                KnobAfter = knobAfter
             };
         }
 
@@ -388,24 +388,24 @@ namespace Nez.UI
 
             return new HPBarStyle
             {
-                background = background,
-                knob = knob
+                Background = background,
+                Knob = knob
             };
         }
 
 
-        public HPBarStyle clone()
+        public HPBarStyle Clone()
         {
             return new HPBarStyle
             {
-                background = background,
-                disabledBackground = disabledBackground,
-                knob = knob,
-                disabledKnob = disabledKnob,
-                knobBefore = knobBefore,
-                knobAfter = knobAfter,
-                disabledKnobBefore = disabledKnobBefore,
-                disabledKnobAfter = disabledKnobAfter
+                Background = Background,
+                DisabledBackground = DisabledBackground,
+                Knob = Knob,
+                DisabledKnob = DisabledKnob,
+                KnobBefore = KnobBefore,
+                KnobAfter = KnobAfter,
+                DisabledKnobBefore = DisabledKnobBefore,
+                DisabledKnobAfter = DisabledKnobAfter
             };
         }
     }

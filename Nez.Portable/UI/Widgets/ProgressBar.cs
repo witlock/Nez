@@ -28,8 +28,9 @@ namespace Nez.UI
 		{
 			get
 			{
-				if (_vertical)
-					return 140;
+				if( _vertical )
+					return height;
+
 				else
 					return Math.Max(style.Knob == null ? 0 : style.Knob.MinHeight,
 						style.Background != null ? style.Background.MinHeight : 0);

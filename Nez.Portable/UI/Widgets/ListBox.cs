@@ -118,19 +118,12 @@ namespace Nez.UI
 				return -1;
 
 			var top = 0f;
-<<<<<<< HEAD
-			//if( _style.background != null )
+
+			//if (_style.Background != null)
 			//{
-			//	top += _style.background.topHeight + _style.background.bottomHeight;
-			//	mousePos.Y += _style.background.bottomHeight;
+			//	top += _style.Background.TopHeight + _style.Background.BottomHeight;
+			//	mousePos.Y += _style.Background.BottomHeight;
 			//}
-=======
-			if (_style.Background != null)
-			{
-				top += _style.Background.TopHeight + _style.Background.BottomHeight;
-				mousePos.Y += _style.Background.BottomHeight;
-			}
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 
 			var index = (int)((top + mousePos.Y) / _itemHeight);
 			if (index < 0 || index > _items.Count - 1)

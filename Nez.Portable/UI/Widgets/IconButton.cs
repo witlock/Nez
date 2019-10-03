@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 namespace Nez.UI
 {
     /// <summary>
-    /// Best button
+    /// Button with a background and an icon
     /// </summary>
     public class IconButton : Button
     {
@@ -19,16 +19,16 @@ namespace Nez.UI
             image = new Image();
             iconImage = new Image();
             var stck = new Stack();
-            image.setScaling(Scaling.Fit);
-            stck.add(image);
-            stck.add(iconImage);
-            add(stck);
-            setStyle(style);
-            padLeft(style.PadLeft).padRight(style.PadRight).padTop(style.PadTop).padBottom(style.PadBottom);
-            setSize(preferredWidth, preferredHeight);
+            image.SetScaling(Scaling.Fit);
+            stck.Add(image);
+            stck.Add(iconImage);
+            Add(stck);
+            SetStyle(style);
+            PadLeft(style.PadLeft).PadRight(style.PadRight).PadTop(style.PadTop).PadBottom(style.PadBottom);
+            SetSize(PreferredWidth, PreferredHeight);
         }
 
-        public IconButton(Skin skin, string styleName = null) : this(skin.get<IconButtonStyle>(styleName))
+        public IconButton(Skin skin, string styleName = null) : this(skin.Get<IconButtonStyle>(styleName))
         { }
 
 
@@ -47,58 +47,58 @@ namespace Nez.UI
         }
 
 
-        public override void setStyle(ButtonStyle style)
+        public override void SetStyle(ButtonStyle style)
         {
-            Insist.isTrue(style is IconButtonStyle, "style must be a ImageButtonStyle");
+            Insist.IsTrue(style is IconButtonStyle, "style must be a ImageButtonStyle");
 
-            base.setStyle(style);
+            base.SetStyle(style);
             this.style = (IconButtonStyle)style;
             if (image != null)
-                updateImage();
+                UpdateImage();
         }
 
 
-        public new IconButtonStyle getStyle()
+        public new IconButtonStyle GetStyle()
         {
             return style;
         }
 
 
-        public Image getImage()
+        public Image GetImage()
         {
             return image;
         }
 
 
-        public Cell getImageCell()
+        public Cell GetImageCell()
         {
-            return getCell(image);
+            return GetCell(image);
         }
 
 
-        private void updateImage()
+        private void UpdateImage()
         {
             IDrawable drawable = null;
-            if (_isDisabled && style.imageDisabled != null)
-                drawable = style.imageDisabled;
-            else if (_mouseDown && style.imageDown != null)
-                drawable = style.imageDown;
-            else if (isChecked && style.imageChecked != null)
-                drawable = (style.imageCheckedOver != null && _mouseOver) ? style.imageCheckedOver : style.imageChecked;
-            else if (_mouseOver && style.imageOver != null)
-                drawable = style.imageOver;
-            else if (style.imageUp != null) //
-                drawable = style.imageUp;
+            if (_isDisabled && style.ImageDisabled != null)
+                drawable = style.ImageDisabled;
+            else if (_mouseDown && style.ImageDown != null)
+                drawable = style.ImageDown;
+            else if (IsChecked && style.ImageChecked != null)
+                drawable = (style.ImageCheckedOver != null && _mouseOver) ? style.ImageCheckedOver : style.ImageChecked;
+            else if (_mouseOver && style.ImageOver != null)
+                drawable = style.ImageOver;
+            else if (style.ImageUp != null) //
+                drawable = style.ImageUp;
 
-            image.setDrawable(drawable);
-            iconImage.setDrawable(style.Icon);
+            image.SetDrawable(drawable);
+            iconImage.SetDrawable(style.Icon);
         }
 
 
-        public override void draw(Graphics graphics, float parentAlpha)
+        public override void Draw(Batcher batcher, float parentAlpha)
         {
-            updateImage();
-            base.draw(graphics, parentAlpha);
+            UpdateImage();
+            base.Draw(batcher, parentAlpha);
         }
 
     }
@@ -119,24 +119,24 @@ namespace Nez.UI
         }
 
 
-        public new IconButtonStyle clone()
+        public new IconButtonStyle Clone()
         {
             return new IconButtonStyle
             {
                 Icon = Icon,
-                up = up,
-                down = down,
-                over = over,
-                checkked = checkked,
-                checkedOver = checkedOver,
-                disabled = disabled,
+                Up = Up,
+                Down = Down,
+                Over = Over,
+                Checked = Checked,
+                CheckedOver = CheckedOver,
+                Disabled = Disabled,
 
-                imageUp = imageUp,
-                imageDown = imageDown,
-                imageOver = imageOver,
-                imageChecked = imageChecked,
-                imageCheckedOver = imageCheckedOver,
-                imageDisabled = imageDisabled
+                ImageUp = ImageUp,
+                ImageDown = ImageDown,
+                ImageOver = ImageOver,
+                ImageChecked = ImageChecked,
+                ImageCheckedOver = ImageCheckedOver,
+                ImageDisabled = ImageDisabled
             };
         }
     }

@@ -23,123 +23,123 @@ namespace Nez.UI
         public NumberField(float initial, float min, float max, float step, bool showButtons, NumberFieldStyle style)
         {
             this.style = style;
-            defaults().space(0);
+            Defaults().Space(0);
             SetMin(min);
             SetMax(max);
             SetStep(step);
 
             field = new TextField(initial.ToString(), this.style);
-            field.setAlignment(Align.center);
-            setNumber(initial);
+            field.SetAlignment(Nez.UI.Align.Center);
+            SetNumber(initial);
             if (showButtons)
             {
                 decrease = new TextButton("", style.DecreaseButtonStyle);
                 
                 increase = new TextButton("", style.IncreaseButtonStyle);
-                increase.onClicked += button =>
+                increase.OnClicked += button =>
                 {
-                    increaseNumber();
+                    IncreaseNumber();
                 };
 
-                decrease.onClicked += button =>
+                decrease.OnClicked += button =>
                 {
-                    decreaseNumber();
+                    DecreaseNumber();
                 };
 
             }
 
-            field.onTextChanged += (field, s) =>
+            field.OnTextChanged += (field, s) =>
             {
                 if (float.TryParse(s, out float n))
                 {
-                    setNumber(n >= maximum ? maximum : n);
+                    SetNumber(n >= maximum ? maximum : n);
                 }
                 else
                 {
-                    setNumber(minimum);
+                    SetNumber(minimum);
                 }
 
             };
 
             if (showButtons)
-                add(decrease);
+                Add(decrease);
 
-            add(field).fill().expand();
+            Add(field).Fill().Expand();
 
             if (showButtons)
-                add(increase);
+                Add(increase);
 
             //setSize(preferredWidth, preferredHeight);
         }
 
-        private void increaseNumber()
+        private void IncreaseNumber()
         {
             if (number + step > maximum)
             {
-                setNumber(maximum);
+                SetNumber(maximum);
             }
             else
             {
-                setNumber(Mathf.roundToNearest(number + step, step));
+                SetNumber(Mathf.RoundToNearest(number + step, step));
             }
         }
 
-        private void decreaseNumber()
+        private void DecreaseNumber()
         {
             if (number - step < minimum)
             {
-                setNumber(minimum);
+                SetNumber(minimum);
             }
             else
             {
-                setNumber(Mathf.roundToNearest(number - step, step));
+                SetNumber(Mathf.RoundToNearest(number - step, step));
             }
         }
 
-        public TextButton getDecreaseButton()
+        public TextButton GetDecreaseButton()
         {
             return decrease;
         }
 
-        public TextButton getIncreaseButton()
+        public TextButton GetIncreaseButton()
         {
             return increase;
         }
 
-        public TextField getTextField()
+        public TextField GetTextField()
         {
             return field;
         }
 
-        public Cell getDecreaseButtonCell()
+        public Cell GetDecreaseButtonCell()
         {
-            return getCell(decrease);
+            return GetCell(decrease);
         }
 
-        public Cell getIncreaseButtonCell()
+        public Cell GetIncreaseButtonCell()
         {
-            return getCell(increase);
+            return GetCell(increase);
         }
 
-        public Cell getNumberFieldCell()
+        public Cell GetNumberFieldCell()
         {
-            return getCell(field);
+            return GetCell(field);
         }
 
-        public void setNumber(float value)
+        public void SetNumber(float value)
         {
-            field.setTextForced(value.ToString());
+            field.SetTextForced(value.ToString());
             number = value;
 
             onNumberChanged(this, value);
         }
 
-        public float getNumber()
+        public float GetNumber()
         {
             return number;
         }
 
-        public NumberField(float initial, float min, float max, float step, bool showButtons, Skin skin, string styleName = null) : this(initial, min, max, step, showButtons, skin.get<NumberFieldStyle>(styleName))
+        public NumberField(float initial, float min, float max, float step, bool showButtons, Skin skin, string styleName = null) : this(initial, min, max, step, showButtons, skin.Get<NumberFieldStyle>(styleName))
         {
         }
 
@@ -156,38 +156,38 @@ namespace Nez.UI
             minimum = min;
         }
 
-        public void onMouseEnter()
+        public void OnMouseEnter()
         {
             
         }
 
-        public void onMouseExit()
+        public void OnMouseExit()
         {
             
         }
 
-        public bool onMousePressed(Vector2 mousePos)
+        public bool OnMousePressed(Vector2 mousePos)
         {
             return false;
         }
 
-        public void onMouseMoved(Vector2 mousePos)
+        public void OnMouseMoved(Vector2 mousePos)
         {
             
         }
 
-        public void onMouseUp(Vector2 mousePos)
+        public void OnMouseUp(Vector2 mousePos)
         {
             
         }
 
-        public bool onMouseScrolled(int mouseWheelDelta)
+        public bool OnMouseScrolled(int mouseWheelDelta)
         {
 
             if(mouseWheelDelta > 0)
-                increaseNumber();
+                IncreaseNumber();
             else
-                decreaseNumber();
+                DecreaseNumber();
 
             return true;
         }
@@ -203,7 +203,7 @@ namespace Nez.UI
 
         public NumberFieldStyle()
         {
-            font = Graphics.instance.bitmapFont;
+            Font = Graphics.Instance.BitmapFont;
         }
 
 
@@ -214,21 +214,21 @@ namespace Nez.UI
         }
 
 
-        public TextFieldStyle clone()
+        public new TextFieldStyle Clone()
         {
             return new TextFieldStyle
             {
-                font = font,
-                fontColor = fontColor,
-                focusedFontColor = focusedFontColor,
-                disabledFontColor = disabledFontColor,
-                background = background,
-                focusedBackground = focusedBackground,
-                disabledBackground = disabledBackground,
-                cursor = cursor,
-                selection = selection,
-                messageFont = messageFont,
-                messageFontColor = messageFontColor
+                Font = Font,
+                FontColor = FontColor,
+                FocusedFontColor = FocusedFontColor,
+                DisabledFontColor = DisabledFontColor,
+                Background = Background,
+                FocusedBackground = FocusedBackground,
+                DisabledBackground = DisabledBackground,
+                Cursor = Cursor,
+                Selection = Selection,
+                MessageFont = MessageFont,
+                MessageFontColor = MessageFontColor
             };
         }
     }

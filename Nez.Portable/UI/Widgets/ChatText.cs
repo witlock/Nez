@@ -117,7 +117,7 @@ namespace Nez.UI
                 if (_style.Background != null)
                     widthCalc -= _style.Background.LeftWidth + _style.Background.RightWidth;
 
-                _wrappedString = _style.Font.wrapText(_text, widthCalc / _fontScaleX);
+                _wrappedString = _style.Font.WrapText(_text, widthCalc / _fontScaleX);
             }
             else if (_ellipsis != null && width > 0)
             {
@@ -126,14 +126,14 @@ namespace Nez.UI
                 if (_style.Background != null)
                     widthCalc -= _style.Background.LeftWidth + _style.Background.RightWidth;
 
-                _wrappedString = _style.Font.truncateText(_text, _ellipsis, widthCalc / _fontScaleX);
+                _wrappedString = _style.Font.TruncateText(_text, _ellipsis, widthCalc / _fontScaleX);
             }
             else
             {
                 _wrappedString = _text;
             }
 
-            _prefSize = _style.Font.measureString(_wrappedString) * new Vector2(_fontScaleX, _fontScaleY);
+            _prefSize = _style.Font.MeasureString(_wrappedString) * new Vector2(_fontScaleX, _fontScaleY);
         }
 
 
@@ -318,18 +318,18 @@ namespace Nez.UI
             else
             {
                 textWidth = width;
-                textHeight = _style.Font.lineHeight * _fontScaleY;
+                textHeight = _style.Font.LineHeight * _fontScaleY;
             }
 
             if ((labelAlign & AlignInternal.Bottom) != 0)
             {
                 _textPosition.Y += height - textHeight;
-                y += _style.Font.descent;
+                y += _style.Font.Padding.Bottom;
             }
             else if ((labelAlign & AlignInternal.Top) != 0)
             {
                 _textPosition.Y += 0;
-                y -= _style.Font.descent;
+                y -= _style.Font.Padding.Bottom;
             }
             else
             {

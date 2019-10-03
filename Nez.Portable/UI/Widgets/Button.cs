@@ -202,12 +202,8 @@ namespace Nez.UI
 			_mouseOver = true;
 		}
 
+		public virtual void OnUnfocused()
 
-<<<<<<< HEAD
-		public virtual void onUnfocused()
-=======
-		protected virtual void OnUnfocused()
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 		{
 			_mouseOver = _mouseDown = false;
 		}

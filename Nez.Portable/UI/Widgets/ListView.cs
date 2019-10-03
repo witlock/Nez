@@ -15,7 +15,7 @@ namespace Nez.UI
         public event Action<T> onChanged;
 
         ListViewStyle _style;
-        List<T> _items = new List<T>();
+        List<T> _Items = new List<T>();
         List<T> _filteredItems = new List<T>();
         ArraySelection<T> _selection;
         float _prefWidth, _prefHeight;
@@ -27,41 +27,41 @@ namespace Nez.UI
 
         public IListViewFilter filter;
 
-        public ListView(Skin skin) : this(skin.get<ListViewStyle>())
+        public ListView(Skin skin) : this(skin.Get<ListViewStyle>())
         {
         }
 
-        public ListView(Skin skin, string styleName) : this(skin.get<ListViewStyle>(styleName))
+        public ListView(Skin skin, string styleName) : this(skin.Get<ListViewStyle>(styleName))
         {
         }
 
         public ListView(ListViewStyle style)
         {
-            _selection = new ArraySelection<T>(_items);
-            _selection.setElement(this);
-            _selection.setRequired(true);
+            _selection = new ArraySelection<T>(_Items);
+            _selection.SetElement(this);
+            _selection.SetRequired(true);
 
             setStyle(style);
-            setSize(preferredWidth, preferredHeight);
+            SetSize(PreferredWidth, PreferredHeight);
         }
 
 
         #region ILayout
 
-        public override float preferredWidth
+        public override float PreferredWidth
         {
             get
             {
-                validate();
+                Validate();
                 return _prefWidth;
             }
         }
 
-        public override float preferredHeight
+        public override float PreferredHeight
         {
             get
             {
-                validate();
+                Validate();
                 return _prefHeight;
             }
         }
@@ -71,29 +71,29 @@ namespace Nez.UI
 
         #region IInputListener
 
-        void IInputListener.onMouseEnter()
+        void IInputListener.OnMouseEnter()
         {
             _isMouseOverList = true;
         }
 
 
-        void IInputListener.onMouseExit()
+        void IInputListener.OnMouseExit()
         {
             _isMouseOverList = false;
             _hoveredItemIndex = -1;
         }
 
 
-        bool IInputListener.onMousePressed(Vector2 mousePos)
+        bool IInputListener.OnMousePressed(Vector2 mousePos)
         {
-            if (_selection.isDisabled() || _filteredItems.Count == 0)
+            if (_selection.IsDisabled() || _filteredItems.Count == 0)
                 return false;
 
-            var lastSelectedItem = _selection.getLastSelected();
+            var lastSelectedItem = _selection.GetLastSelected();
             var index = getItemIndexUnderMousePosition(mousePos);
             index = System.Math.Max(0, index);
             index = System.Math.Min(_filteredItems.Count - 1, index);
-            _selection.choose(_filteredItems[index]);
+            _selection.Choose(_filteredItems[index]);
 
             if (lastSelectedItem != _filteredItems[index] && onChanged != null)
                 onChanged(_filteredItems[index]);
@@ -101,17 +101,17 @@ namespace Nez.UI
             return true;
         }
 
-        void IInputListener.onMouseMoved(Vector2 mousePos)
+        void IInputListener.OnMouseMoved(Vector2 mousePos)
         {
         }
 
 
-        void IInputListener.onMouseUp(Vector2 mousePos)
+        void IInputListener.OnMouseUp(Vector2 mousePos)
         {
         }
 
 
-        bool IInputListener.onMouseScrolled(int mouseWheelDelta)
+        bool IInputListener.OnMouseScrolled(int mouseWheelDelta)
         {
             return false;
         }
@@ -119,14 +119,14 @@ namespace Nez.UI
 
         int getItemIndexUnderMousePosition(Vector2 mousePos)
         {
-            if (_selection.isDisabled() || _filteredItems.Count == 0)
+            if (_selection.IsDisabled() || _filteredItems.Count == 0)
                 return -1;
 
             var top = 0f;
             if (_style.background != null)
             {
-                top += _style.background.topHeight + _style.background.bottomHeight;
-                mousePos.Y += _style.background.bottomHeight;
+                top += _style.background.TopHeight + _style.background.BottomHeight;
+                mousePos.Y += _style.background.BottomHeight;
             }
 
             var index = (int) ((top + mousePos.Y) / _itemHeight);
@@ -139,34 +139,34 @@ namespace Nez.UI
         #endregion
 
 
-        public override void layout()
+        public override void Layout()
         {
             IDrawable selectedDrawable = _style.selection;
 
             _prefWidth = 0;
-            for (var i = 0; i < _items.Count; i++)
+            for (var i = 0; i < _Items.Count; i++)
             {
-                var e = _items[i] as Element;
+                var e = _Items[i] as Element;
                 if (e == null) continue;
-                _prefWidth = System.Math.Max(e.preferredWidth, _prefWidth);
-                _itemHeight = System.Math.Max(e.preferredHeight, _itemHeight);
+                _prefWidth = System.Math.Max(e.PreferredWidth, _prefWidth);
+                _itemHeight = System.Math.Max(e.PreferredHeight, _itemHeight);
             }
 
-            _prefWidth += selectedDrawable.leftWidth + selectedDrawable.rightWidth;
-            _prefHeight = _items.Count * _itemHeight;
+            _prefWidth += selectedDrawable.LeftWidth + selectedDrawable.RightWidth;
+            _prefHeight = _Items.Count * _itemHeight;
 
             var background = _style.background;
             if (background != null)
             {
-                _prefWidth += background.leftWidth + background.rightWidth;
-                _prefHeight += background.topHeight + background.bottomHeight;
+                _prefWidth += background.LeftWidth + background.RightWidth;
+                _prefHeight += background.TopHeight + background.BottomHeight;
             }
 
-            for (int i = 0, n = _items.Count; i < n; i++)
+            for (int i = 0, n = _Items.Count; i < n; i++)
             {
-                var child = _items[i];
+                var child = _Items[i];
                 if (child is ILayout)
-                    ((ILayout)child).validate();
+                    ((ILayout)child).Validate();
             }
         }
 
@@ -177,50 +177,50 @@ namespace Nez.UI
 
             if (filterText.Length == 0)
             {
-                _filteredItems.AddRange(_items);
+                _filteredItems.AddRange(_Items);
                 return;
             }
                 
 
-            for (int i = 0; i < _items.Count; i++)
+            for (int i = 0; i < _Items.Count; i++)
             {
-                var item = _items[i] as Element;
+                var item = _Items[i] as Element;
 
-                if (filter.isValid(filterText, item.userData))
+                if (filter.isValid(filterText, item.UserData))
                     _filteredItems.Add(item as T);
             }
         }
 
-        public override void draw(Graphics graphics, float parentAlpha)
+        public override void Draw(Batcher batcher, float parentAlpha)
         {
             // update our hoved item if the mouse is over the list
             if (_isMouseOverList)
             {
-                var mousePos = screenToLocalCoordinates(stage.getMousePosition());
+                var mousePos = ScreenToLocalCoordinates(_stage.GetMousePosition());
                 _hoveredItemIndex = getItemIndexUnderMousePosition(mousePos);
             }
 
-            validate();
+            Validate();
 
             var selectedDrawable = _style.selection;
 
-            var color = getColor();
+            var color = GetColor();
             color = new Color(color, (int) (color.A * parentAlpha));
 
-            float x = getX(), y = getY(), width = getWidth(), height = getHeight();
+            float x = GetX(), y = GetY(), width = GetWidth(), height = GetHeight();
             var itemY = 0f;
 
             var background = _style.background;
             if (background != null)
             {
-                background.draw(graphics, x, y, width, height, color);
-                var leftWidth = background.leftWidth;
-                x += leftWidth;
-                itemY += background.topHeight;
-                width -= leftWidth + background.rightWidth;
+                background.Draw(batcher, x, y, width, height, color);
+                var LeftWidth = background.LeftWidth;
+                x += LeftWidth;
+                itemY += background.TopHeight;
+                width -= LeftWidth + background.RightWidth;
             }
 
-            _cullingArea = new RectangleF(0, 0, parent.getWidth(), parent.getHeight());
+            _cullingArea = new RectangleF(0, 0, parent.GetWidth(), parent.GetHeight());
             for (var i = 0; i < _filteredItems.Count; i++)
             {
                 var item = _filteredItems[i];
@@ -228,20 +228,20 @@ namespace Nez.UI
 
                 var pos = new Vector2(x + _offsetX, y + itemY + _offsetY + _itemHeight / 2);
 
-                var selected = _selection.contains(item);
+                var selected = _selection.Contains(item);
                 if (selected)
                 {
-                    selectedDrawable.draw(graphics, x, y + itemY, width, _itemHeight, color);
+                    selectedDrawable.Draw(batcher, x, y + itemY, width, _itemHeight, color);
                 }
                 else if (i == _hoveredItemIndex && _style.hoverSelection != null)
                 {
-                    _style.hoverSelection.draw(graphics, x, y + itemY, width, _itemHeight, color);
+                    _style.hoverSelection.Draw(batcher, x, y + itemY, width, _itemHeight, color);
                 }
 
                 //if (_cullingArea.Contains(pos))
                 //{
-                    e.setPosition(pos.X, pos.Y- _itemHeight/2);
-                    e.draw(graphics, parentAlpha);
+                    e.SetPosition(pos.X, pos.Y- _itemHeight/2);
+                    e.Draw(batcher, parentAlpha);
                 //}
 
                 itemY += _itemHeight;
@@ -253,9 +253,9 @@ namespace Nez.UI
 
         public ListView<T> setStyle(ListViewStyle style)
         {
-            Insist.isNotNull(style, "style cannot be null");
+            Insist.IsNotNull(style, "style cannot be null");
             _style = style;
-            invalidateHierarchy();
+            InvalidateHierarchy();
             return this;
         }
 
@@ -272,36 +272,36 @@ namespace Nez.UI
 
         public T getSelected()
         {
-            return _selection.first();
+            return _selection.First();
         }
 
         public ListView<T> setSelected(T item)
         {
-            if (_items.Contains(item))
-                _selection.set(item);
-            else if (_selection.getRequired() && _items.Count > 0)
-                _selection.set(_items[0]);
+            if (_Items.Contains(item))
+                _selection.Set(item);
+            else if (_selection.GetRequired() && _Items.Count > 0)
+                _selection.Set(_Items[0]);
             else
-                _selection.clear();
+                _selection.Clear();
 
             return this;
         }
 
         public int getSelectedIndex()
         {
-            var selected = _selection.items();
-            return selected.Count == 0 ? -1 : _items.IndexOf(selected[0]);
+            var selected = _selection.Items();
+            return selected.Count == 0 ? -1 : _Items.IndexOf(selected[0]);
         }
 
         public ListView<T> setSelectedIndex(int index)
         {
-            Insist.isFalse(index < -1 || index >= _items.Count,
-                "index must be >= -1 and < " + _items.Count + ": " + index);
+            Insist.IsFalse(index < -1 || index >= _Items.Count,
+                "index must be >= -1 and < " + _Items.Count + ": " + index);
 
             if (index == -1)
-                _selection.clear();
+                _selection.Clear();
             else
-                _selection.set(_items[index]);
+                _selection.Set(_Items[index]);
 
             return this;
         }
@@ -315,54 +315,54 @@ namespace Nez.UI
 
         public ListView<T> setItems(IList<T> newItems)
         {
-            Insist.isNotNull(newItems, "newItems cannot be null");
+            Insist.IsNotNull(newItems, "newItems cannot be null");
             float oldPrefWidth = _prefWidth, oldPrefHeight = _prefHeight;
 
-            _items.Clear();
-            _items.AddRange(newItems);
-            _selection.validate();
+            _Items.Clear();
+            _Items.AddRange(newItems);
+            _selection.Validate();
 
-            invalidate();
-            validate();
+            Invalidate();
+            Validate();
             if (oldPrefWidth != _prefWidth || oldPrefHeight != _prefHeight)
             {
-                invalidateHierarchy();
-                setSize(_prefWidth, _prefHeight);
+                InvalidateHierarchy();
+                SetSize(_prefWidth, _prefHeight);
             }
-            _filteredItems.AddRange(_items);
+            _filteredItems.AddRange(_Items);
             return this;
         }
 
 
         public void clearItems()
         {
-            if (_items.Count == 0)
+            if (_Items.Count == 0)
                 return;
 
-            _items.Clear();
+            _Items.Clear();
             _filteredItems.Clear();
-            _selection.clear();
-            invalidateHierarchy();
+            _selection.Clear();
+            InvalidateHierarchy();
         }
 
         public List<T> getItems()
         {
-            return _items;
+            return _Items;
         }
 
         public void AddItem(T item)
         {
             float oldPrefWidth = _prefWidth, oldPrefHeight = _prefHeight;
-            _items.Add(item);
+            _Items.Add(item);
             _filteredItems.Clear();
-            invalidate();
-            validate();
+            Invalidate();
+            Validate();
             if (oldPrefWidth != _prefWidth || oldPrefHeight != _prefHeight)
             {
-                invalidateHierarchy();
-                setSize(_prefWidth, _prefHeight);
+                InvalidateHierarchy();
+                SetSize(_prefWidth, _prefHeight);
             }
-            _filteredItems.AddRange(_items);
+            _filteredItems.AddRange(_Items);
         }
 
 

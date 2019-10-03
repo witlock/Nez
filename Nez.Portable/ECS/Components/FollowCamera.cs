@@ -86,21 +86,12 @@ namespace Nez
 		void IUpdatable.Update()
 		{
 			// translate the deadzone to be in world space
-<<<<<<< HEAD
-			var halfScreen = camera.bounds.size * 0.5f;
-            _worldSpaceDeadzone.x = camera.position.X - halfScreen.X * camera.rawZoom + deadzone.x + focusOffset.X;
-            _worldSpaceDeadzone.y = camera.position.Y - halfScreen.Y * camera.rawZoom + deadzone.y + focusOffset.Y;
-            _worldSpaceDeadzone.width = deadzone.width;
-			_worldSpaceDeadzone.height = deadzone.height;
-=======
 			var halfScreen = Camera.Bounds.Size * 0.5f;
-			_worldSpaceDeadzone.X = Camera.Position.X - halfScreen.X + Deadzone.X + FocusOffset.X;
-			_worldSpaceDeadzone.Y = Camera.Position.Y - halfScreen.Y + Deadzone.Y + FocusOffset.Y;
+			_worldSpaceDeadzone.X = Camera.Position.X - halfScreen.X * Camera.RawZoom + Deadzone.X + FocusOffset.X;
+			_worldSpaceDeadzone.Y = Camera.Position.Y - halfScreen.Y * Camera.RawZoom + Deadzone.Y + FocusOffset.Y;
 			_worldSpaceDeadzone.Width = Deadzone.Width;
 			_worldSpaceDeadzone.Height = Deadzone.Height;
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
-
-			if (_targetEntity != null)
+            if (_targetEntity != null)
 				UpdateFollow();
 
 			Camera.Position = Vector2.Lerp(Camera.Position, Camera.Position + _desiredPositionDelta, FollowLerp);

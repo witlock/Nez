@@ -92,13 +92,8 @@ namespace Nez
 		void NotifyTriggerListeners(Pair<Collider> collisionPair, bool isEntering)
 		{
 			// call the onTriggerEnter method for any relevant components
-<<<<<<< HEAD
-			collisionPair.first?.entity?.getComponents( _tempTriggerList );
-			for( var i = 0; i < _tempTriggerList.Count; i++ )
-=======
-			collisionPair.First.Entity.GetComponents(_tempTriggerList);
+			collisionPair.First?.Entity.GetComponents(_tempTriggerList);
 			for (var i = 0; i < _tempTriggerList.Count; i++)
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 			{
 				if (isEntering)
 					_tempTriggerList[i].OnTriggerEnter(collisionPair.Second, collisionPair.First);

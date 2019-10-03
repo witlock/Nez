@@ -25,25 +25,10 @@
 		/// <param name="amount">Amount.</param>
 		public void Update(ref float amount)
 		{
-<<<<<<< HEAD
-			remainder += amount;
-            var motion = 0f;
-
-		    motion = Mathf.truncateToInt(remainder);
-
-            //if (remainder > 0.5f)
-            //    motion += 0.5f;
-            //if (remainder < -0.5f)
-            //    motion += -0.5f;
-
-
-            //var motion = Mathf.truncateToInt(remainder);
-            remainder -= motion;
-=======
 			Remainder += amount;
 			var motion = Mathf.TruncateToInt(Remainder);
 			Remainder -= motion;
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
+
 			amount = motion;
 		}
 

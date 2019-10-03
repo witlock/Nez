@@ -151,19 +151,12 @@ namespace Nez
 		    
 
 			// wrap up the table in a ScrollPane
-<<<<<<< HEAD
-			_scrollPane = ui.stage.addElement( new ScrollPane( _table, _skin ) );
-            //_scrollPane.setScale(2f);
-			// force a validate which will layout the ScrollPane and populate the proper scrollBarWidth
-			_scrollPane.validate();
-			_scrollPane.setSize( 400 + _scrollPane.getScrollBarWidth(), Screen.height );
-=======
+
 			_scrollPane = ui.Stage.AddElement(new ScrollPane(_table, _skin));
 
 			// force a validate which will layout the ScrollPane and populate the proper scrollBarWidth
 			_scrollPane.Validate();
 			_scrollPane.SetSize(295 + _scrollPane.GetScrollBarWidth(), Screen.Height);
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 		}
 
 

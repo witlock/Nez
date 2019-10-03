@@ -73,11 +73,7 @@ namespace Nez
 		{
 			if (_destRectsDirty)
 			{
-<<<<<<< HEAD
-				subtexture.generateNinePatchRects( _finalRenderRect, _destRects, subtexture.left*2, subtexture.right*2, subtexture.top*2, subtexture.bottom*2);
-=======
 				Sprite.GenerateNinePatchRects(_finalRenderRect, _destRects, Sprite.Left, Sprite.Right, Sprite.Top, Sprite.Bottom);
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 				_destRectsDirty = false;
 			}
 

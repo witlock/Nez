@@ -34,28 +34,12 @@ namespace Nez.UI
 		protected bool _needsLayout = true;
 		protected bool _layoutEnabled = true;
 
-<<<<<<< HEAD
-	    public object userData;
-
-        /// <summary>
-        /// If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget is laid out.
-        /// </summary>
-        /// <param name="graphics">Graphics.</param>
-        /// <param name="parentAlpha">Parent alpha.</param>
-        public virtual void draw( Graphics graphics, float parentAlpha )
-		{
-			validate();
-		}
-
-=======
-
 		/// <summary>
 		/// If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget is laid out.
 		/// </summary>
 		/// <param name="batcher">Batcher.</param>
 		/// <param name="parentAlpha">Parent alpha.</param>
 		public virtual void Draw(Batcher batcher, float parentAlpha) => Validate();
->>>>>>> 65d2f2cd2bfe95907f48a501bc8573e636285026
 
 		protected virtual void SizeChanged() => Invalidate();
 

@@ -28,7 +28,7 @@ namespace Nez.UI
 		{
 			get
 			{
-				if( _vertical )
+				if(_vertical)
 					return height;
 
 				else

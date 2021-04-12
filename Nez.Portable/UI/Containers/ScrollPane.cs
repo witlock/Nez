@@ -24,7 +24,7 @@ namespace Nez.UI
 		Rectangle _vKnobBounds;
 		Rectangle _widgetAreaBounds;
 
-		float _scrollSpeed = 0.005f;
+		float _scrollSpeed = 0.05f;
 		bool _useNaturalScrolling = true;
 		bool _scrollX, _scrollY = true;
 		bool _vScrollOnRight = true;
@@ -1267,7 +1267,7 @@ namespace Nez.UI
 
 			// draw the background
 			var color = GetColor();
-			color = new Color(color, (int)(color.A * parentAlpha));
+			color = ColorExt.Create(color, (int)(color.A * parentAlpha));
 			if (_style.Background != null)
 				_style.Background.Draw(batcher, 0, 0, GetWidth(), GetHeight(), color);
 

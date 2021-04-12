@@ -18,11 +18,17 @@ namespace Nez.ImGuiTools
 		public bool ShowSeperateGameWindow = true;
 		public bool ShowMenuBar = true;
 
+		public bool FocusGameWindowOnMiddleClick = false;
+		public bool FocusGameWindowOnRightClick = false;
+		public bool DisableKeyboardInputWhenGameWindowUnfocused = true;
+		public bool DisableMouseWheelWhenGameWindowUnfocused = true;
+
 		List<Type> _sceneSubclasses = new List<Type>();
 		System.Reflection.MethodInfo[] _themes;
 
 		CoreWindow _coreWindow = new CoreWindow();
 		SceneGraphWindow _sceneGraphWindow = new SceneGraphWindow();
+		SpriteAtlasEditorWindow _spriteAtlasEditorWindow;
 
 		List<EntityInspector> _entityInspectors = new List<EntityInspector>();
 		List<Action> _drawCommands = new List<Action>();
@@ -59,6 +65,7 @@ namespace Nez.ImGuiTools
 
 			// tone down indent
 			ImGui.GetStyle().IndentSpacing = 12;
+			ImGui.GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
 
 			// find all themes
 			_themes = typeof(NezImGuiThemes).GetMethods(System.Reflection.BindingFlags.Static |
@@ -83,6 +90,12 @@ namespace Nez.ImGuiTools
 			_sceneGraphWindow.Show(ref ShowSceneGraphWindow);
 			_coreWindow.Show(ref ShowCoreWindow);
 
+			if (_spriteAtlasEditorWindow != null)
+			{
+				if (!_spriteAtlasEditorWindow.Show())
+					_spriteAtlasEditorWindow = null;
+			}
+
 			if (ShowDemoWindow)
 				ImGui.ShowDemoWindow(ref ShowDemoWindow);
 
@@ -104,6 +117,9 @@ namespace Nez.ImGuiTools
 				_mainMenuBarHeight = ImGui.GetWindowHeight();
 				if (ImGui.BeginMenu("File"))
 				{
+					if (ImGui.MenuItem("Open Sprite Atlas Editor"))
+						_spriteAtlasEditorWindow = _spriteAtlasEditorWindow ?? new SpriteAtlasEditorWindow();
+
 					if (ImGui.MenuItem("Quit ImGui"))
 						SetEnabled(false);
 					ImGui.EndMenu();
@@ -178,7 +194,9 @@ namespace Nez.ImGuiTools
 					ImGui.MenuItem("Style Editor", null, ref ShowStyleEditor);
 					if (ImGui.MenuItem("Open imgui_demo.cpp on GitHub"))
 					{
-						System.Diagnostics.Process.Start("https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp");
+						var url = "https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp";
+						var startInfo = new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true };
+						System.Diagnostics.Process.Start(startInfo);
 					}
 
 					ImGui.Separator();

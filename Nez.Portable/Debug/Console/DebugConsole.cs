@@ -473,6 +473,9 @@ namespace Nez.Console
 			_currentText = "";
 			_seekIndex = -1;
 
+			if(data.Length == 0)
+				return;
+
 			string[] args = new string[data.Length - 1];
 			for (int i = 1; i < data.Length; i++)
 				args[i - 1] = data[i];
@@ -589,6 +592,17 @@ namespace Nez.Console
 			Instance._functionKeyActions[functionKey - 1] = action;
 		}
 
+		/// <summary>
+		/// binds a debug console command to a function key
+		/// </summary>
+		/// <param name="functionKey">The function (e.g. 1 for F1).</param>
+		/// <param name="command">The name of the command.</param>
+		/// <param name="args">Optional list of arguments.</param>
+		public static void BindCommandToFunctionKey(int functionKey, string command, params string[] args)
+		{
+			Instance._functionKeyActions[functionKey - 1] = () => Instance.ExecuteCommand(command, args);
+		}
+
 		#endregion
 
 
@@ -651,10 +665,7 @@ namespace Nez.Console
 				foreach (var method in type.DeclaredMethods)
 				{
 					CommandAttribute attr = null;
-					var attrs = method.GetCustomAttributes(typeof(CommandAttribute), false)
-						.Where(a => a is CommandAttribute);
-					if (IEnumerableExt.Count(attrs) > 0)
-						attr = attrs.First() as CommandAttribute;
+					attr = method.GetCustomAttribute<CommandAttribute>(false);
 
 					if (attr != null)
 						ProcessMethod(method, attr);

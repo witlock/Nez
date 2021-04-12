@@ -31,14 +31,14 @@ namespace Nez.Tools.Atlases.Console
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Ensures output is square.")]
 		public bool sqr;
 
-		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Searches subdirectories of any input directories.")]
-		public bool r;
-
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Origin X for the images", DefaultValue = Constants.DefaultOrigin)]
 		public float originX = Constants.DefaultOrigin;
 
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Origin Y for the images", DefaultValue = Constants.DefaultOrigin)]
 		public float originY = Constants.DefaultOrigin;
+
+		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Don't create animations based on folders. Default: false")]
+		public bool dontCreateAnimations = false;
 
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Framerate for any animations", DefaultValue = Constants.DefaultFrameRate)]
 		public int fps = Constants.DefaultFrameRate;
@@ -48,6 +48,15 @@ namespace Nez.Tools.Atlases.Console
 
 		[Argument( ArgumentType.AtMostOnce, ShortName = "", HelpText = "Output LOVE2D lua file" )]
 		public bool lua;
+
+		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Write images relative paths instead of just names when building the maps.")]
+		public bool writePaths;
+
+		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "The map will use LF (\\n) for line endings instead of CRLF (\\r\\n).")]
+		public bool lf;
+
+		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "The origins of the images won't be written in the map.")]
+		public bool noOrigins;
 
 		private ProgramArguments() { }
 
@@ -70,12 +79,15 @@ namespace Nez.Tools.Atlases.Console
 				Padding = pad,
 				IsPowerOfTwo = pow2,
 				IsSquare = sqr,
-				RecurseSubdirectories = r,
+				DontCreateAnimations = dontCreateAnimations,
 				OriginX = originX,
 				OriginY = originY,
 				FrameRate = fps,
 				InputPaths = input,
-				OutputLua = lua
+				OutputLua = lua,
+				WritePaths = writePaths,
+				LF = lf,
+				NoOrigins = noOrigins
 			};
 		}
 	}
@@ -1110,6 +1122,11 @@ namespace Nez.Tools.Atlases.Console
 						else if (type == typeof(uint))
 						{
 							value = int.Parse(stringData);
+							return true;
+						}
+						else if (type == typeof(float))
+						{
+							value = float.Parse(stringData);
 							return true;
 						}
 						else

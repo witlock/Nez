@@ -9,6 +9,11 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Nez.ParticleDesigner;
 using Nez.Sprites;
+using Nez.Textures;
+using Nez.Tiled;
+using Microsoft.Xna.Framework.Audio;
+using Nez.BitmapFonts;
+
 
 namespace Nez.Systems
 {
@@ -20,6 +25,7 @@ namespace Nez.Systems
 		Dictionary<string, Effect> _loadedEffects = new Dictionary<string, Effect>();
 
 		List<IDisposable> _disposableAssets;
+
 		List<IDisposable> DisposableAssets
 		{
 			get
@@ -29,6 +35,7 @@ namespace Nez.Systems
 					var fieldInfo = ReflectionUtils.GetFieldInfo(typeof(ContentManager), "disposableAssets");
 					_disposableAssets = fieldInfo.GetValue(this) as List<IDisposable>;
 				}
+
 				return _disposableAssets;
 			}
 		}
@@ -66,7 +73,7 @@ namespace Nez.Systems
 		/// extension or be preceded by "Content" in the path. png/jpg files should have the file extension and have an absolute
 		/// path or a path starting with "Content".
 		/// </summary>
-		public Texture2D LoadTexture(string name)
+		public Texture2D LoadTexture(string name, bool premultiplyAlpha = false)
 		{
 			// no file extension. Assumed to be an xnb so let ContentManager load it
 			if (string.IsNullOrEmpty(Path.GetExtension(name)))
@@ -78,10 +85,9 @@ namespace Nez.Systems
 					return tex;
 			}
 
-			var graphicsDeviceService = ServiceProvider.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
-			using (var stream = TitleContainer.OpenStream(name))
+			using (var stream = Path.IsPathRooted(name) ? File.OpenRead(name) : TitleContainer.OpenStream(name))
 			{
-				var texture = Texture2D.FromStream(graphicsDeviceService.GraphicsDevice, stream);
+				var texture = premultiplyAlpha ? TextureUtils.TextureFromStreamPreMultiplied(stream) : Texture2D.FromStream(Core.GraphicsDevice, stream);
 				texture.Name = name;
 				LoadedAssets[name] = texture;
 				DisposableAssets.Add(texture);
@@ -91,17 +97,45 @@ namespace Nez.Systems
 		}
 
 		/// <summary>
+		/// loads a SoundEffect either from xnb or directly from a wav. Note that xnb files should not contain the .xnb file
+		/// extension or be preceded by "Content" in the path. wav files should have the file extension and have an absolute
+		/// path or a path starting with "Content".
+		/// </summary>
+		public SoundEffect LoadSoundEffect(string name)
+		{
+			// no file extension. Assumed to be an xnb so let ContentManager load it
+			if (string.IsNullOrEmpty(Path.GetExtension(name)))
+				return Load<SoundEffect>(name);
+
+			if (LoadedAssets.TryGetValue(name, out var asset))
+			{
+				if (asset is SoundEffect sfx)
+				{
+					return sfx;
+				}
+			}
+
+			using (var stream = Path.IsPathRooted(name) ? File.OpenRead(name) : TitleContainer.OpenStream(name))
+			{
+				var sfx = SoundEffect.FromStream(stream);
+				LoadedAssets[name] = sfx;
+				DisposableAssets.Add(sfx);
+				return sfx;
+			}
+		}
+
+		/// <summary>
 		/// loads a Tiled map
 		/// </summary>
-		public Tiled.TmxMap LoadTiledMap(string name)
+		public TmxMap LoadTiledMap(string name)
 		{
 			if (LoadedAssets.TryGetValue(name, out var asset))
 			{
-				if (asset is Tiled.TmxMap map)
+				if (asset is TmxMap map)
 					return map;
 			}
 
-			var tiledMap = new Tiled.TmxMap(name);
+			var tiledMap = new TmxMap().LoadTmxMap(name);
 
 			LoadedAssets[name] = tiledMap;
 			DisposableAssets.Add(tiledMap);
@@ -129,9 +163,9 @@ namespace Nez.Systems
 		}
 
 		/// <summary>
-		/// Loads a SpriteAtlas
+		/// Loads a SpriteAtlas created with the Sprite Atlas Packer tool
 		/// </summary>
-		public SpriteAtlas LoadSpriteAtlas(string name)
+		public SpriteAtlas LoadSpriteAtlas(string name, bool premultiplyAlpha = false)
 		{
 			if (LoadedAssets.TryGetValue(name, out var asset))
 			{
@@ -139,12 +173,31 @@ namespace Nez.Systems
 					return spriteAtlas;
 			}
 
-			var atlas = SpriteAtlasLoader.ParseSpriteAtlas(name);
+			var atlas = SpriteAtlasLoader.ParseSpriteAtlas(name, premultiplyAlpha);
 
 			LoadedAssets.Add(name, atlas);
 			DisposableAssets.Add(atlas);
 
 			return atlas;
+		}
+
+		/// <summary>
+		/// Loads a BitmapFont
+		/// </summary>
+		public BitmapFont LoadBitmapFont(string name, bool premultiplyAlpha = false)
+		{
+			if (LoadedAssets.TryGetValue(name, out var asset))
+			{
+				if (asset is BitmapFont bmFont)
+					return bmFont;
+			}
+
+			var font = BitmapFontLoader.LoadFontFromFile(name, premultiplyAlpha);
+
+			LoadedAssets.Add(name, font);
+			DisposableAssets.Add(font);
+
+			return font;
 		}
 
 		/// <summary>
@@ -196,7 +249,7 @@ namespace Nez.Systems
 		/// </summary>
 		/// <returns>The effect.</returns>
 		/// <param name="name">Name.</param>
-		internal T LoadEffect<T>(string name, byte[] effectCode) where T : Effect
+		public T LoadEffect<T>(string name, byte[] effectCode) where T : Effect
 		{
 			var effect = Activator.CreateInstance(typeof(T), Core.GraphicsDevice, effectCode) as T;
 			effect.Name = name + "-" + Utils.RandomString(5);
@@ -382,6 +435,7 @@ namespace Nez.Systems
 						return kv.Key;
 				}
 			}
+
 			return null;
 		}
 
@@ -405,11 +459,8 @@ namespace Nez.Systems
 	/// </summary>
 	sealed class NezGlobalContentManager : NezContentManager
 	{
-		public NezGlobalContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider,
-			rootDirectory)
-		{
-		}
-
+		public NezGlobalContentManager(IServiceProvider serviceProvider, string rootDirectory) : base(serviceProvider, rootDirectory)
+		{}
 
 		/// <summary>
 		/// override that will load embedded resources if they have the "nez://" prefix
@@ -420,13 +471,13 @@ namespace Nez.Systems
 		{
 			if (assetName.StartsWith("nez://"))
 			{
-				var assembly = ReflectionUtils.GetAssembly(GetType());
+				var assembly = GetType().Assembly;
 
 #if FNA
 				// for FNA, we will just search for the file by name since the assembly name will not be known at runtime
-				foreach( var item in assembly.GetManifestResourceNames() )
+				foreach (var item in assembly.GetManifestResourceNames())
 				{
-					if( item.EndsWith( assetName.Substring( assetName.Length - 20 ) ) )
+					if (item.EndsWith(assetName.Substring(assetName.Length - 20)))
 					{
 						assetName = "nez://" + item;
 						break;

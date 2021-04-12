@@ -10,11 +10,11 @@ namespace Nez.UI
 {
     public class NumberField : Table, IInputListener
     {
-        public event Action<NumberField, float> onNumberChanged = delegate { };
-        TextButton decrease;
-        TextButton increase;
-        TextField field;
-        NumberFieldStyle style;
+        public event Action<NumberField, float> OnNumberChanged = delegate { };
+        private TextButton decrease;
+        private TextButton increase;
+        private TextField field;
+        private NumberFieldStyle style;
         private float minimum;
         private float maximum;
         private float number;
@@ -31,10 +31,11 @@ namespace Nez.UI
             field = new TextField(initial.ToString(), this.style);
             field.SetAlignment(Nez.UI.Align.Center);
             SetNumber(initial);
+
             if (showButtons)
             {
                 decrease = new TextButton("", style.DecreaseButtonStyle);
-                
+
                 increase = new TextButton("", style.IncreaseButtonStyle);
                 increase.OnClicked += button =>
                 {
@@ -131,7 +132,7 @@ namespace Nez.UI
             field.SetTextForced(value.ToString());
             number = value;
 
-            onNumberChanged(this, value);
+            OnNumberChanged(this, value);
         }
 
         public float GetNumber()
@@ -158,12 +159,12 @@ namespace Nez.UI
 
         public void OnMouseEnter()
         {
-            
+
         }
 
         public void OnMouseExit()
         {
-            
+
         }
 
         public bool OnMousePressed(Vector2 mousePos)
@@ -173,18 +174,18 @@ namespace Nez.UI
 
         public void OnMouseMoved(Vector2 mousePos)
         {
-            
+
         }
 
         public void OnMouseUp(Vector2 mousePos)
         {
-            
+
         }
 
         public bool OnMouseScrolled(int mouseWheelDelta)
         {
 
-            if(mouseWheelDelta > 0)
+            if (mouseWheelDelta > 0)
                 IncreaseNumber();
             else
                 DecreaseNumber();
@@ -195,8 +196,7 @@ namespace Nez.UI
 
     public class NumberFieldStyle : TextFieldStyle
     {
-        /** Optional. */
-        public IDrawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
+        public IDrawable ImageUp, ImageDown, ImageOver, ImageChecked, ImageCheckedOver, ImageDisabled;
 
         public TextButtonStyle DecreaseButtonStyle;
         public TextButtonStyle IncreaseButtonStyle;

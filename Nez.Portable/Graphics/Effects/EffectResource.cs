@@ -41,6 +41,8 @@ namespace Nez
 
 		internal static byte[] PixelGlitchBytes => GetFileResourceBytes("Content/nez/effects/PixelGlitch.mgfxo");
 
+		internal static byte[] StencilLightBytes => GetFileResourceBytes("Content/nez/effects/StencilLight.mgfxo");
+
 		// deferred lighting
 		internal static byte[] DeferredSpriteBytes => GetFileResourceBytes("Content/nez/effects/DeferredSprite.mgfxo");
 
@@ -55,9 +57,7 @@ namespace Nez
 		internal static byte[] SquaresTransitionBytes => GetFileResourceBytes("Content/nez/effects/transitions/Squares.mgfxo");
 
 		// sprite or post processor effects
-		internal static byte[] SpriteEffectBytes =>
-			GetMonoGameEmbeddedResourceBytes(
-				"Microsoft.Xna.Framework.Graphics.Effect.Resources.SpriteEffect.ogl.mgfxo");
+		internal static byte[] SpriteEffectBytes => GetMonoGameEmbeddedResourceBytes("Microsoft.Xna.Framework.Graphics.Effect.Resources.SpriteEffect.ogl.mgfxo");
 
 		internal static byte[] MultiTextureOverlayBytes => GetFileResourceBytes("Content/nez/effects/MultiTextureOverlay.mgfxo");
 
@@ -79,7 +79,7 @@ namespace Nez
 		/// <param name="name">Name.</param>
 		static byte[] GetEmbeddedResourceBytes(string name)
 		{
-			var assembly = ReflectionUtils.GetAssembly(typeof(EffectResource));
+			var assembly = typeof(EffectResource).Assembly;
 			using (var stream = assembly.GetManifestResourceStream(name))
 			{
 				using (var ms = new MemoryStream())
@@ -93,11 +93,15 @@ namespace Nez
 
 		internal static byte[] GetMonoGameEmbeddedResourceBytes(string name)
 		{
+			var assembly = typeof(MathHelper).Assembly;
 #if FNA
 			name = name.Replace( ".ogl.mgfxo", ".fxb" );
+#else
+			// MG 3.8 decided to change the location of Effecs...sigh.
+			if (!assembly.GetManifestResourceNames().Contains(name))
+				name = name.Replace(".Framework", ".Framework.Platform");
 #endif
 
-			var assembly = ReflectionUtils.GetAssembly(typeof(MathHelper));
 			using (var stream = assembly.GetManifestResourceStream(name))
 			{
 				using (var ms = new MemoryStream())

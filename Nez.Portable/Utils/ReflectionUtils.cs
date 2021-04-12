@@ -9,8 +9,6 @@ namespace Nez
 	/// </summary>
 	public static class ReflectionUtils
 	{
-		public static Assembly GetAssembly(Type type) => type.GetTypeInfo().Assembly;
-
 		#region Fields
 
 		public static FieldInfo GetFieldInfo(object targetObject, string fieldName) => GetFieldInfo(targetObject.GetType(), fieldName);
@@ -197,7 +195,7 @@ namespace Nez
 			{
 				foreach (var type in assembly.GetTypes())
 				{
-					if (type.GetCustomAttribute<T>() != null)
+					if (type.GetAttribute<T>() != null)
 						typeList.Add(type);
 				}
 			}

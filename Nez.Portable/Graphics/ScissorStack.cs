@@ -77,7 +77,7 @@ namespace Nez
 			var tmp = new Vector2(scissor.X, scissor.Y);
 			tmp = Vector2.Transform(tmp, batchTransform);
 
-			if( camera != null )
+			if (camera != null)
 				tmp = camera.WorldToScreenPoint( tmp/camera.RawZoom );
 
 			var newScissor = new Rectangle();
@@ -89,10 +89,11 @@ namespace Nez
 			tmp.Y = scissor.Y + scissor.Height;
 			tmp = Vector2.Transform(tmp, batchTransform);
 
-			if( camera != null )
+			if (camera != null)
 				tmp = camera.WorldToScreenPoint( tmp / camera.RawZoom);
 			newScissor.Width = (int)tmp.X - newScissor.X;
 			newScissor.Height = (int)tmp.Y - newScissor.Y;
+
 
 			return newScissor;
 		}

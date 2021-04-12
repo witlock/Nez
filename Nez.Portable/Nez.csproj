@@ -11,8 +11,9 @@
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RootNamespace>Nez</RootNamespace>
 		<AssemblyName>Nez</AssemblyName>
-		<TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
+		<TargetFramework>net471</TargetFramework>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1591,1570,1572,1573</NoWarn>
 		<IntermediateOutputPath>obj\Nez\$(Configuration)</IntermediateOutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -31,7 +32,7 @@
 	</ItemGroup>
   
 	<ItemGroup>
-		<PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+		<PackageReference Include="System.Drawing.Common" Version="5.0.2" />
 		<PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="all" />
 	</ItemGroup>
   

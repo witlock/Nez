@@ -98,7 +98,7 @@ namespace Nez
 			yield return Coroutine.WaitForSeconds(DelayBeforeSquaresInDuration);
 
 			// unpopulate squares
-			yield return Core.StartCoroutine(TickEffectProgressProperty(_squaresEffect, SquaresInDuration,
+			yield return Core.StartCoroutine(TickEffectProgressProperty(_squaresEffect, SquaresOutDuration,
 				EaseHelper.OppositeEaseType(EaseType), true));
 
 			TransitionComplete();
@@ -111,16 +111,14 @@ namespace Nez
 
 		public override void Render(Batcher batcher)
 		{
-			GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, null);
-			batcher.Begin(BlendState.NonPremultiplied, Core.DefaultSamplerState, DepthStencilState.None, null,
-				_squaresEffect);
+			Core.GraphicsDevice.SetRenderTarget(null);
+			batcher.Begin(BlendState.NonPremultiplied, Core.DefaultSamplerState, DepthStencilState.None, null, _squaresEffect);
 
 			// we only render the previousSceneRender while populating the squares
 			if (!_isNewSceneLoaded)
 				batcher.Draw(PreviousSceneRender, _destinationRect, Color.White);
 			else
-				batcher.Draw(_overlayTexture, new Rectangle(0, 0, Screen.Width, Screen.Height),
-					Color.Transparent);
+				batcher.Draw(_overlayTexture, new Rectangle(0, 0, Screen.Width, Screen.Height), Color.Transparent);
 
 			batcher.End();
 		}

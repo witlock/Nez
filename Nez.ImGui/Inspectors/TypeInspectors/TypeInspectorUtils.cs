@@ -53,7 +53,7 @@ namespace Nez.ImGuiTools.TypeInspectors
 					continue;
 
 				// skip enabled and entity which is handled elsewhere if this is a Component
-				if (isComponentSubclass && (field.Name == "enabled" || field.Name == "entity"))
+				if (isComponentSubclass && (field.Name == "Enabled" || field.Name == "Entity"))
 					continue;
 
 				var inspector = GetInspectorForType(field.FieldType, target, field);
@@ -89,7 +89,7 @@ namespace Nez.ImGuiTools.TypeInspectors
 					continue;
 
 				// skip Component.enabled  and entity which is handled elsewhere
-				if (isComponentSubclass && (prop.Name == "enabled" || prop.Name == "entity"))
+				if (isComponentSubclass && (prop.Name == "Enabled" || prop.Name == "Entity"))
 					continue;
 
 				var inspector = GetInspectorForType(prop.PropertyType, target, prop);
@@ -121,7 +121,7 @@ namespace Nez.ImGuiTools.TypeInspectors
 			var methods = ReflectionUtils.GetMethods(type);
 			foreach (var method in methods)
 			{
-				var attr = method.GetCustomAttribute<T>();
+				var attr = method.GetAttribute<T>();
 				if (attr == null)
 					continue;
 
@@ -160,7 +160,7 @@ namespace Nez.ImGuiTools.TypeInspectors
 				return new TI.ListInspector();
 
 			// check for custom inspectors before checking Nez types in case a subclass implemented one
-			var customInspectorType = valueType.GetTypeInfo().GetCustomAttribute<CustomInspectorAttribute>();
+			var customInspectorType = valueType.GetTypeInfo().GetAttribute<CustomInspectorAttribute>();
 			if (customInspectorType != null)
 			{
 				if (customInspectorType.InspectorType.GetTypeInfo().IsSubclassOf(abstractTypeInspectorType))

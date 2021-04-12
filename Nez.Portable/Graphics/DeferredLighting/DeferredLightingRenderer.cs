@@ -61,7 +61,7 @@ namespace Nez.DeferredLighting
 		/// <summary>
 		/// if true, all stages of the deferred pipeline are rendered after the final combine
 		/// </summary>
-		public bool EnableDebugBufferRender = false;
+		public bool EnableDebugBufferRender;
 
 
 		int _lightLayer;
@@ -214,16 +214,16 @@ namespace Nez.DeferredLighting
 			_lightEffect.SetNormalMap(NormalRT);
 			_lightEffect.UpdateForCamera(scene.Camera);
 
-			GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, LightRT);
+			Core.GraphicsDevice.SetRenderTarget(LightRT);
 			Core.GraphicsDevice.Clear(Color.Transparent);
 			Core.GraphicsDevice.BlendState = BlendState.Additive;
 			Core.GraphicsDevice.DepthStencilState = DepthStencilState.None;
+			Core.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 
 			var renderables = scene.RenderableComponents.ComponentsWithRenderLayer(_lightLayer);
 			for (var i = 0; i < renderables.Length; i++)
 			{
-				Insist.IsTrue(renderables.Buffer[i] is DeferredLight,
-					"Found a Renderable in the lightLayer that is not a DeferredLight!");
+				Insist.IsTrue(renderables.Buffer[i] is DeferredLight, "Found a Renderable in the lightLayer that is not a DeferredLight!");
 				var renderable = renderables.Buffer[i];
 				if (renderable.Enabled)
 				{
@@ -236,7 +236,7 @@ namespace Nez.DeferredLighting
 
 		void RenderFinalCombine(Scene scene)
 		{
-			GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, scene.SceneRenderTarget);
+			Core.GraphicsDevice.SetRenderTarget(scene.SceneRenderTarget);
 			Core.GraphicsDevice.BlendState = BlendState.Opaque;
 			Core.GraphicsDevice.DepthStencilState = DepthStencilState.None;
 
@@ -249,7 +249,7 @@ namespace Nez.DeferredLighting
 		{
 			var tempRT = RenderTarget.GetTemporary(scene.SceneRenderTarget.Width, scene.SceneRenderTarget.Height);
 
-			GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, tempRT);
+			Core.GraphicsDevice.SetRenderTarget(tempRT);
 
 			var halfWidth = tempRT.Width / 2;
 			var halfHeight = tempRT.Height / 2;
@@ -258,11 +258,10 @@ namespace Nez.DeferredLighting
 			Graphics.Instance.Batcher.Draw(LightRT, new Rectangle(0, 0, halfWidth, halfHeight));
 			Graphics.Instance.Batcher.Draw(DiffuseRT, new Rectangle(halfWidth, 0, halfWidth, halfHeight));
 			Graphics.Instance.Batcher.Draw(NormalRT, new Rectangle(0, halfHeight, halfWidth, halfHeight));
-			Graphics.Instance.Batcher.Draw(scene.SceneRenderTarget,
-				new Rectangle(halfWidth, halfHeight, halfWidth, halfHeight));
+			Graphics.Instance.Batcher.Draw(scene.SceneRenderTarget, new Rectangle(halfWidth, halfHeight, halfWidth, halfHeight));
 			Graphics.Instance.Batcher.End();
 
-			GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, scene.SceneRenderTarget);
+			Core.GraphicsDevice.SetRenderTarget(scene.SceneRenderTarget);
 			Graphics.Instance.Batcher.Begin(BlendState.Opaque);
 			Graphics.Instance.Batcher.Draw(tempRT, Vector2.Zero);
 			Graphics.Instance.Batcher.End();

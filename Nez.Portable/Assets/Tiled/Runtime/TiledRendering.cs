@@ -16,12 +16,13 @@ namespace Nez.Tiled
 		/// <param name="batcher"></param>
 		/// <param name="scale"></param>
 		/// <param name="layerDepth"></param>
-		public static void RenderMap(TmxMap map, Batcher batcher, Vector2 position, Vector2 scale, float layerDepth)
+		/// <param name="cameraClipBounds"></param>
+		public static void RenderMap(TmxMap map, Batcher batcher, Vector2 position, Vector2 scale, float layerDepth, RectangleF cameraClipBounds)
 		{
 			foreach (var layer in map.Layers)
 			{
 				if (layer is TmxLayer tmxLayer && tmxLayer.Visible)
-					RenderLayer(tmxLayer, batcher, position, scale, layerDepth);
+					RenderLayer(tmxLayer, batcher, position, scale, layerDepth, cameraClipBounds);
 				else if (layer is TmxImageLayer tmxImageLayer && tmxImageLayer.Visible)
 					RenderImageLayer(tmxImageLayer, batcher, position, scale, layerDepth);
 				else if (layer is TmxGroup tmxGroup && tmxGroup.Visible)
@@ -209,7 +210,14 @@ namespace Nez.Tiled
 				if (!obj.Visible)
 					continue;
 
-				var pos = position + new Vector2(obj.X, obj.Y) * scale;
+                // if we are not debug rendering, we only render Tile and Text types
+                if (!Core.DebugRenderEnabled)
+                {
+                    if (obj.ObjectType != TmxObjectType.Tile && obj.ObjectType != TmxObjectType.Text)
+                        continue;
+                }
+
+                var pos = position + new Vector2(obj.X, obj.Y) * scale;
 				switch (obj.ObjectType)
 				{
 					case TmxObjectType.Basic:
@@ -251,7 +259,8 @@ namespace Nez.Tiled
 						batcher.DrawString(Graphics.Instance.BitmapFont, obj.Text.Value, pos, obj.Text.Color, Mathf.Radians(obj.Rotation), Vector2.Zero, fontScale, SpriteEffects.None, layerDepth);
 						goto default;
 					default:
-						batcher.DrawString(Graphics.Instance.BitmapFont, $"{obj.Name} ({obj.Type})", pos - new Vector2(0, 15), Color.Black);
+                        if (Core.DebugRenderEnabled)
+                            batcher.DrawString(Graphics.Instance.BitmapFont, $"{obj.Name} ({obj.Type})", pos - new Vector2(0, 15), Color.Black);
 						break;
 				}
 			}
@@ -274,7 +283,7 @@ namespace Nez.Tiled
 			if (!group.Visible)
 				return;
 
-			foreach (var layer in group.layers)
+			foreach (var layer in group.Layers)
 			{
 				if (layer is TmxGroup tmxSubGroup)
 					RenderGroup(tmxSubGroup, batcher, position, scale, layerDepth);

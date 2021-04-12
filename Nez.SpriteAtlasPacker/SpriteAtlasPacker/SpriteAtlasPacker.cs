@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 
 namespace Nez.Tools.Atlases
 {
@@ -30,9 +31,13 @@ namespace Nez.Tools.Atlases
 			public bool RecurseSubdirectories;
 			public float OriginX = Constants.DefaultOrigin;
 			public float OriginY = Constants.DefaultOrigin;
+			public bool DontCreateAnimations = false;
 			public int FrameRate = Constants.DefaultFrameRate;
 			public string[] InputPaths;
 			public bool OutputLua;
+			public bool WritePaths;
+			public bool LF;
+			public bool NoOrigins;
 		}
 
 		public static int PackSprites(Config config)
@@ -49,19 +54,11 @@ namespace Nez.Tools.Atlases
 				return (int)FailCode.NoImages;
 			}
 
-			// make sure no images have the same name if we're building a map
-			for (int i = 0; i < images.Count; i++)
+			// make sure no images have the same name or path if we're building a map
+			if ((!config.WritePaths && CheckDuplicateImagesNames(images))
+				|| (config.WritePaths && CheckDuplicateImagesPaths(images)))
 			{
-				var str1 = Path.GetFileNameWithoutExtension(images[i]);
-				for (int j = i + 1; j < images.Count; j++)
-				{
-					var str2 = Path.GetFileNameWithoutExtension(images[j]);
-					if (str1 == str2)
-					{
-						System.Console.WriteLine("Two images have the same name: {0} = {1}", images[i], images[j]);
-						return (int)FailCode.ImageNameCollision;
-					}
-				}
+				return (int)FailCode.ImageNameCollision;
 			}
 
 			// generate our output
@@ -92,17 +89,17 @@ namespace Nez.Tools.Atlases
 					outputImage.Save(config.AtlasOutputFile, ImageFormat.Bmp);
 					break;
 				default:
-					throw new Exception("Invalid image format for output image");
+					throw new Exception("Invalid image format for output image.");
 			}
 
-			if(config.OutputLua)
-				config.MapOutputFile = config.MapOutputFile.Replace( ".atlas", ".lua" );
+			if (config.OutputLua)
+				config.MapOutputFile = config.MapOutputFile.Replace(".atlas", ".lua");
 
 			if (File.Exists(config.MapOutputFile))
 				File.Delete(config.MapOutputFile);
 
 			if (config.OutputLua)
-				LuaMapExporter.Save(config.MapOutputFile, outputMap, animations, outputImage.Width, outputImage.Height, config );
+				LuaMapExporter.Save(config.MapOutputFile, outputMap, animations, outputImage.Width, outputImage.Height, config);
 			else
 				AtlasMapExporter.Save(config.MapOutputFile, outputMap, animations, config);
 
@@ -122,7 +119,7 @@ namespace Nez.Tools.Atlases
 					}
 
 					foreach (var dir in Directory.GetDirectories(str))
-						FindImagesRecursively(dir, images, animations);
+						FindImagesRecursively(dir, images, animations, !arguments.DontCreateAnimations);
 				}
 				else if (MiscHelper.IsImageFile(str))
 				{
@@ -131,10 +128,10 @@ namespace Nez.Tools.Atlases
 			}
 		}
 
-		static void FindImagesRecursively(string dir, List<string> images, Dictionary<string, List<string>> animations)
+		static void FindImagesRecursively(string dir, List<string> images, Dictionary<string, List<string>> animations, bool createAnimations)
 		{
 			var animationFrames = new List<string>();
-			foreach (var file in Directory.GetFiles(dir))
+			foreach (var file in Directory.GetFiles(dir).OrderBy(_ => _))
 			{
 				if (MiscHelper.IsImageFile(file))
 				{
@@ -143,12 +140,47 @@ namespace Nez.Tools.Atlases
 				}
 			}
 
-			if (animationFrames.Count > 0)
-				animations.Add( Path.GetFileName( dir ), animationFrames );
+			if (createAnimations && animationFrames.Count > 0)
+				animations.Add(Path.GetFileName(dir), animationFrames);
 
 			foreach (var subdir in Directory.GetDirectories(dir))
-				FindImagesRecursively(subdir, images, animations);
+				FindImagesRecursively(subdir, images, animations, createAnimations);
 		}
 
+		static bool CheckDuplicateImagesNames(IList<string> images)
+		{
+			for (int i = 0; i < images.Count; i++)
+			{
+				var str1 = Path.GetFileNameWithoutExtension(images[i]);
+				for (int j = i + 1; j < images.Count; j++)
+				{
+					var str2 = Path.GetFileNameWithoutExtension(images[j]);
+					if (str1 == str2)
+					{
+						System.Console.WriteLine("Two images have the same name: {0} = {1}.", images[i], images[j]);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		static bool CheckDuplicateImagesPaths(IList<string> images)
+		{
+			for(int i = 0; i < images.Count; i++)
+			{
+				string str1 = images[i];
+				for(int j = i + 1; j < images.Count; j++)
+				{
+					string str2 = images[j];
+					if (str1 == str2)
+					{
+						System.Console.WriteLine("Two images have the same path: {0}.", images[i]);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 	}
 }

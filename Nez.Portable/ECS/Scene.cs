@@ -123,11 +123,6 @@ namespace Nez
 		public readonly RenderableComponentList RenderableComponents;
 
 		/// <summary>
-		/// Stoes and manages all entity processors
-		/// </summary>
-		public readonly EntityProcessorList EntityProcessors;
-
-		/// <summary>
 		/// gets the size of the sceneRenderTarget
 		/// </summary>
 		/// <value>The size of the scene render texture.</value>
@@ -312,9 +307,6 @@ namespace Nez
 			var cameraEntity = CreateEntity("camera");
 			Camera = cameraEntity.AddComponent(new Camera());
 
-			if (Core.entitySystemsEnabled)
-				EntityProcessors = new EntityProcessorList();
-
 			// setup our resolution policy. we'll commit it in begin
 			_resolutionPolicy = _defaultSceneResolutionPolicy;
 			_designResolutionSize = _defaultDesignResolutionSize;
@@ -361,11 +353,9 @@ namespace Nez
 
 			// prep our render textures
 			UpdateResolutionScaler();
-			GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, _sceneRenderTarget);
-
-			if (EntityProcessors != null)
-				EntityProcessors.Begin();
+			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
 			Core.Emitter.AddObserver(CoreEvents.GraphicsDeviceReset, OnGraphicsDeviceReset);
+			Core.Emitter.AddObserver(CoreEvents.OrientationChanged, OnOrientationChanged);
 
 			_didSceneBegin = true;
 			OnStart();
@@ -398,16 +388,13 @@ namespace Nez
 			if (_destinationRenderTarget != null)
 				_destinationRenderTarget.Dispose();
 
-			if (EntityProcessors != null)
-				EntityProcessors.End();
-
 			Unload();
 		}
 
 		public virtual void Update()
 		{
 			// we set the RenderTarget here so that the Viewport will match the RenderTarget properly
-			GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, _sceneRenderTarget);
+			Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
 
 			// update our lists in case they have any changes
 			Entities.UpdateLists();
@@ -419,15 +406,8 @@ namespace Nez
 					_sceneComponents.Buffer[i].Update();
 			}
 
-			// update our EntityProcessors
-			if (EntityProcessors != null)
-				EntityProcessors.Update();
-
 			// update our Entities
 			Entities.Update();
-
-			if (EntityProcessors != null)
-				EntityProcessors.LateUpdate();
 
 			// we update our renderables after entity.update in case any new Renderables were added
 			RenderableComponents.UpdateLists();
@@ -445,7 +425,7 @@ namespace Nez
 			// the current RenderTarget when they render. If the first Renderer wants the sceneRenderTarget we set and clear it now.
 			if (_renderers[0].WantsToRenderToSceneRenderTarget)
 			{
-				GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, _sceneRenderTarget);
+				Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
 				Core.GraphicsDevice.Clear(ClearColor);
 			}
 
@@ -457,7 +437,7 @@ namespace Nez
 				// Because of that, we track when we are done with our RenderTargets and clear the scene at that time.
 				if (lastRendererHadRenderTarget && _renderers.Buffer[i].WantsToRenderToSceneRenderTarget)
 				{
-					GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, _sceneRenderTarget);
+					Core.GraphicsDevice.SetRenderTarget(_sceneRenderTarget);
 					Core.GraphicsDevice.Clear(ClearColor);
 
 					// force a Camera matrix update to account for the new Viewport size
@@ -489,8 +469,8 @@ namespace Nez
 						var isEven = Mathf.IsEven(enabledCounter);
 						enabledCounter++;
 
-						var source = Mathf.IsEven(enabledCounter) ? _sceneRenderTarget : _destinationRenderTarget;
-						var destination = Mathf.IsOdd(enabledCounter) ? _sceneRenderTarget : _destinationRenderTarget;
+						var source = isEven ? _sceneRenderTarget : _destinationRenderTarget;
+						var destination = !isEven ? _sceneRenderTarget : _destinationRenderTarget;
 						_postProcessors.Buffer[i].Process(source, destination);
 					}
 				}
@@ -503,7 +483,7 @@ namespace Nez
 				{
 					// we need to set the proper RenderTarget here. We want the last one that was the destination of our PostProcessors
 					var currentRenderTarget = Mathf.IsEven(enabledCounter) ? _sceneRenderTarget : _destinationRenderTarget;
-					GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, currentRenderTarget);
+					Core.GraphicsDevice.SetRenderTarget(currentRenderTarget);
 				}
 
 				// force a Camera matrix update to account for the new Viewport size
@@ -535,7 +515,7 @@ namespace Nez
 			else
 			{
 				var currentRenderTarget = Mathf.IsEven(enabledCounter) ? _sceneRenderTarget : _destinationRenderTarget;
-				GraphicsDeviceExt.SetRenderTarget(Core.GraphicsDevice, finalRenderTarget);
+				Core.GraphicsDevice.SetRenderTarget(finalRenderTarget);
 				Core.GraphicsDevice.Clear(LetterboxColor);
 
 				Graphics.Instance.Batcher.Begin(BlendState.Opaque, SamplerState, null, null);
@@ -545,6 +525,7 @@ namespace Nez
 		}
 
 		void OnGraphicsDeviceReset() => UpdateResolutionScaler();
+		void OnOrientationChanged() => UpdateResolutionScaler();
 
 		#endregion
 
@@ -1070,7 +1051,7 @@ namespace Nez
 		/// </summary>
 		/// <returns>The of type.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public List<Entity> EntitiesOfType<T>() where T : Entity => Entities.EntitiesOfType<T>();
+		public List<T> EntitiesOfType<T>() where T : Entity => Entities.EntitiesOfType<T>();
 
 		/// <summary>
 		/// returns the first enabled loaded component of Type T
@@ -1088,34 +1069,5 @@ namespace Nez
 
 		#endregion
 
-
-		#region Entity System Processors
-
-		/// <summary>
-		/// adds an EntitySystem processor to the scene
-		/// </summary>
-		/// <returns>The processor.</returns>
-		/// <param name="processor">Processor.</param>
-		public EntitySystem AddEntityProcessor(EntitySystem processor)
-		{
-			processor.Scene = this;
-			EntityProcessors.Add(processor);
-			return processor;
-		}
-
-		/// <summary>
-		/// removes an EntitySystem processor from the scene
-		/// </summary>
-		/// <param name="processor">Processor.</param>
-		public void RemoveEntityProcessor(EntitySystem processor) => EntityProcessors.Remove(processor);
-
-		/// <summary>
-		/// gets an EntitySystem processor
-		/// </summary>
-		/// <returns>The processor.</returns>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public T GetEntityProcessor<T>() where T : EntitySystem => EntityProcessors.GetProcessor<T>();
-
-		#endregion
 	}
 }

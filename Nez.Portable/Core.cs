@@ -85,11 +85,6 @@ namespace Nez
 		/// </summary>
 		internal static Core _instance;
 
-		/// <summary>
-		/// internal flag used to determine if EntitySystems should be used or not
-		/// </summary>
-		internal static bool entitySystemsEnabled;
-
 #if DEBUG
 		internal static long drawCalls;
 		TimeSpan _frameCounterElapsedTime = TimeSpan.Zero;
@@ -126,8 +121,8 @@ namespace Nez
 				if (_instance._scene == null)
 				{
 					_instance._scene = value;
-					_instance._scene.Begin();
 					_instance.OnSceneChanged();
+					_instance._scene.Begin();
 				}
 				else
 				{
@@ -137,8 +132,7 @@ namespace Nez
 		}
 
 
-		public Core(int width = 1280, int height = 720, bool isFullScreen = false, bool enableEntitySystems = true,
-		            string windowTitle = "Nez", string contentDirectory = "Content")
+		public Core(int width = 1280, int height = 720, bool isFullScreen = false, string windowTitle = "Nez", string contentDirectory = "Content")
 		{
 #if DEBUG
 			_windowTitle = windowTitle;
@@ -165,8 +159,6 @@ namespace Nez
 			Content = new NezGlobalContentManager(Services, base.Content.RootDirectory);
 			IsMouseVisible = true;
 			IsFixedTimeStep = false;
-
-			entitySystemsEnabled = enableEntitySystems;
 
 			// setup systems
 			RegisterGlobalManager(_coroutineManager);
@@ -232,8 +224,6 @@ namespace Nez
 				SuppressDraw();
 				return;
 			}
-
-			StartDebugUpdate();
 
 			// update all our systems and global managers
 			Time.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
@@ -341,19 +331,9 @@ namespace Nez
 		#region Debug Injection
 
 		[Conditional("DEBUG")]
-		void StartDebugUpdate()
-		{
-#if DEBUG
-			TimeRuler.Instance.StartFrame();
-			TimeRuler.Instance.BeginMark("update", Color.Green);
-#endif
-		}
-
-		[Conditional("DEBUG")]
 		void EndDebugUpdate()
 		{
 #if DEBUG
-			TimeRuler.Instance.EndMark("update");
 			DebugConsole.Instance.Update();
 			drawCalls = 0;
 #endif
@@ -363,8 +343,6 @@ namespace Nez
 		void StartDebugDraw(TimeSpan elapsedGameTime)
 		{
 #if DEBUG
-			TimeRuler.Instance.BeginMark("draw", Color.Gold);
-
 			// fps counter
 			_frameCounter++;
 			_frameCounterElapsedTime += elapsedGameTime;
@@ -382,13 +360,7 @@ namespace Nez
 		void EndDebugDraw()
 		{
 #if DEBUG
-			TimeRuler.Instance.EndMark("draw");
 			DebugConsole.Instance.Render();
-
-			// the TimeRuler only needs to render when the DebugConsole is not open
-			if (!DebugConsole.Instance.IsOpen)
-				TimeRuler.Instance.Render();
-
 #if !FNA
 			drawCalls = GraphicsDevice.Metrics.DrawCount;
 #endif
